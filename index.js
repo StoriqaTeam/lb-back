@@ -34,10 +34,10 @@ app.use((req, res, next) => {
 
 app.post('/api/v1/signup', 
 	async (req, res) => {
-		let userCreated =  await userAPI.signUp(req.body.email, req.body.password)
-
+		let userCreated =  await userAPI.signUp(req.body.email, req.body.password, req.body.ref)
+		console.log(userCreated)
 		if (userCreated){
-			await mailAPI.sendEmail('http://localhost:5000', Math.pow(userCreated, 2) )
+			await mailAPI.sendTheMessage(userCreated.email, userCreated.id )
 		} 
 		return (userCreated) 
 		? res.status(200).json({
@@ -60,6 +60,23 @@ app.post('/api/v1/signin',
 			status: 'success',
 			message: user
 		})
+		: res.status(401).json({
+			status: 'error',
+			message: 'Неверный логин/пароль'
+		})
+
+	}
+)
+
+app.post('/api/v1/activate', 
+	async (req, res) => {
+		let user = await userAPI.activateUser(req.body.hash)
+		console.log('user: ', user)
+		return (user)  
+		? res.status(200).json({
+			status: 'success',
+			message: user
+		})
 		: res.status(403).json({
 			status: 'error',
 			message: 'Неверный логин/пароль'
@@ -69,6 +86,7 @@ app.post('/api/v1/signin',
 )
 
 
+
 app.get('*', 
-  (req, res) => res.status(200).json({root: true})
+  (req, res) => res.status(404).json({status: false})
 )

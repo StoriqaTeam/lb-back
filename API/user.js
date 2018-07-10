@@ -3,12 +3,11 @@ const pgConsts   = require('./../config/pg');
 const pgAPI      = require('./pg');
 
 module.exports = {
-	async signUp(email, password){
-		return await pgAPI.execTheQuery('createUser', email, password)
+	async signUp(email, password, ref){
+		return await pgAPI.execTheQuery('createUser', email, password, Math.sqrt(ref))
 		.then(
 			res => {
-				console.log(res)
-				return res.rows[0] && res.rows[0].id || null 
+				return res.rows[0] || null 
 			},
 			err => err
 		)
@@ -17,10 +16,21 @@ module.exports = {
 		return await pgAPI.execTheQuery('loginUser', email, password)
 		.then(
 			res => {
-				console.log(res)
 				return res.rows[0]
 			},
 			err => err
 		)
+	},
+	async activateUser(hash){
+		return await pgAPI.execTheQuery('activateUser', Math.sqrt(hash))
+		.then(
+			res => {
+				let user = res.rows[0]
+				delete user.password
+				return 	user
+
+			},
+			err => err
+		)		
 	}
 }
