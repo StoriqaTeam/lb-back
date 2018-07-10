@@ -11,7 +11,7 @@ module.exports = {
   	  	console.log(props)
 
   	return {
-  		text: 'INSERT INTO users (email, password, signed_up) VALUES ($1, $2, $3) RETURNING id;',
+  		text: 'INSERT INTO users (email, password, signed_up) VALUES ($1, $2, $3) RETURNING id, email;',
   		values: [props[0], props[1], new Date()]
   	}
   },
