@@ -7,9 +7,8 @@ const mailer = require('nodemailer');
 // Use Smtp Protocol to send Email
 
 module.exports = {
-  sendTheMessage(email, id){
-        console.log(email)
-      var transporter = mailer.createTransport({
+  sendTheMessage(template){
+      let transporter = mailer.createTransport({
           service: 'gmail',
           auth: {
             user: 'coffee3shop@gmail.com',
@@ -17,19 +16,13 @@ module.exports = {
           }
         });
 
-        var mailOptions = {
-          from: 'coffee3shop@gmail.com',
-          to: email,
-          subject: `Поздравляем! Аккаунт зарегистрирован.`,
-          text: `Поздравляем! Аккаунт зарегистрирован. Перейдите по ссылке http://localhost:3000/sign/activate?hash=${Math.pow(id, 2)}`
-        };
-
-        transporter.sendMail(mailOptions, function(error, info){
+        transporter.sendMail(template, (error, info) =>{
           if (error) {
             console.log(error);
           } else {
             console.log('Email sent: ' + info.response);
           }
+          return !!error ? false : true
         });
     }
 

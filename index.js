@@ -5,6 +5,7 @@ const express     = require('express'),
           userAPI = require('./API/user'),
           pg = require('./API/pg'),
           mailAPI = require('./helpers/mail'),
+        mailTempl = require('./config/mail'),
      cookieParser = require('cookie-parser');
 
 
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
   if(allowedOrigins.indexOf(origin) > -1){
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+  // res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, application/json');
 
   next();
@@ -37,7 +38,7 @@ app.post('/api/v1/signup',
 		let userCreated =  await userAPI.signUp(req.body.email, req.body.password, req.body.ref)
 		console.log(userCreated)
 		if (userCreated){
-			await mailAPI.sendTheMessage(userCreated.email, userCreated.id )
+			await mailAPI.sendTheMessage(mailTempl.activation(req.body.email, userCreated.id))
 		} 
 		return (userCreated) 
 		? res.status(200).json({
@@ -85,7 +86,41 @@ app.post('/api/v1/activate',
 	}
 )
 
+app.post('/api/v1/soc_auth', 
+	async (req, res, next) => {
+		let user = await userAPI.getUserBySocId(req.body.provider, req.body.soc_id)
+		return (user) 
+		? res.status(200).json({status: 'success', message: user})
+		: next()
+		
+	},
+	async(req, res) => {
+		console.log(req)
+		// let user = await userAPI.createUserBySocialId(req.body)
+		let socialsUser = await userAPI.createUserSocial(req.body)
+		// console.log(user.name, socialsUser.id)
+		res.status(200).json({
+			status: 'success',
+			message: socialsUser
+		})
+	}
+)
 
+app.post('/api/v1/send_ref', 
+	async (req, res) => {
+		let sentMail = 			await mailAPI.sendTheMessage(mailTempl.sendRef(req.body.email, req.body.id))
+		return (sentMail)  
+		? res.status(200).json({
+			status: 'success',
+			message: sentMail
+		})
+		: res.status(502).json({
+			status: 'error',
+			message: 'Ошибка доставки'
+		})
+
+	}
+)
 
 app.get('*', 
   (req, res) => res.status(404).json({status: false})
