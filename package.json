@@ -6,6 +6,7 @@
   "scripts": {
     "start:client": "webpack-dev-server --watch --mode development --open --hot",
     "start": "PORT=5000 node index.js",
+    "start:prod": "PORT=3022 node index.js",
     "pack": "webpack --config webpack.config.js",
     "babel": "babel src -d views",
     "build": "npm run pack && npm run babel"
