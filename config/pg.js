@@ -51,9 +51,10 @@ module.exports = {
   },
   createUserSocial(props){
     let params = props[0]
+    console.log(params)
     return {
-      text: `INSERT INTO user_soc_providers (name, surname, img, provider, soc_id, refed_by, signed_up) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
-      values: [params.name, params.surname, params.img, params.provider, params.soc_id, params.refed_by, new Date()]
+      text: `INSERT INTO user_soc_providers (name, surname, img, provider, soc_id, refed_by, signed_up, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`,
+      values: [params.name, params.surname, params.img, params.provider, params.soc_id, params.refed_by, new Date(), params.email]
     }
       
   }

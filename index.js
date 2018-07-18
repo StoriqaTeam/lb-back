@@ -21,7 +21,7 @@ console.log(`App listening on port ${process.env.PORT || 5000}`)
 //SSR function import
 
 app.use((req, res, next) => {
-  var allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000'];
+  var allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud'];
   var origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
     res.setHeader('Access-Control-Allow-Origin', origin);

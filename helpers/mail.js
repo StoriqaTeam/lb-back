@@ -24,6 +24,7 @@ module.exports = {
           }
           return !!error ? false : true
         });
+        return true
     }
 
 }
