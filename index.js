@@ -3,6 +3,7 @@ const express     = require('express'),
     
          path     = require('path'),
           userAPI = require('./API/user'),
+          chatAPI = require('./API/chat'),
           pg = require('./API/pg'),
           mailAPI = require('./helpers/mail'),
         mailTempl = require('./config/mail'),
@@ -21,7 +22,7 @@ console.log(`App listening on port ${process.env.PORT || 5000}`)
 //SSR function import
 
 app.use((req, res, next) => {
-  var allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud'];
+  var allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud', 'https://lb-front.stq.cloud'];
   var origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -113,6 +114,39 @@ app.post('/api/v1/send_ref',
 		? res.status(200).json({
 			status: 'success',
 			message: sentMail
+		})
+		: res.status(502).json({
+			status: 'error',
+			message: 'Ошибка доставки'
+		})
+
+	}
+)
+app.get('/api/v1/get_messages', 
+	async (req, res) => {
+		let getMessages = await chatAPI.getMessages()
+		return (getMessages)  
+		? res.status(200).json({
+			status: 'success',
+			message: getMessages
+		})
+		: res.status(502).json({
+			status: 'error',
+			message: 'Ошибка доставки'
+		})
+
+	}
+)
+
+app.post('/api/v1/create_message', 
+	async (req, res) => {
+		let createMessage = await chatAPI.createMessage(req.body)
+		let getMessages = await chatAPI.getMessages()
+
+		return (getMessages)  
+		? res.status(200).json({
+			status: 'success',
+			message: getMessages
 		})
 		: res.status(502).json({
 			status: 'error',
