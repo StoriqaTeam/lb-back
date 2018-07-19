@@ -57,5 +57,18 @@ module.exports = {
       values: [params.name, params.surname, params.img, params.provider, params.soc_id, params.refed_by, new Date(), params.email]
     }
       
+  },
+  createMessage(props){
+    let params = props[0]
+    console.log(params)
+    return {
+      text: `INSERT INTO chat_messages (user_name, img, content, created_at) VALUES ($1, $2, $3, $4) RETURNING id;`,
+      values: [params.user_name, params.img, params.content, new Date()]
+    }    
+  },
+  getMessages(){
+    return {
+      text: 'SELECT * FROM chat_messages ORDER  BY id DESC LIMIT 8'
+    }
   }
 }

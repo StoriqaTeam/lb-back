@@ -3,6 +3,7 @@ const express     = require('express'),
     
          path     = require('path'),
           userAPI = require('./API/user'),
+          chatAPI = require('./API/chat'),
           pg = require('./API/pg'),
           mailAPI = require('./helpers/mail'),
         mailTempl = require('./config/mail'),
@@ -113,6 +114,39 @@ app.post('/api/v1/send_ref',
 		? res.status(200).json({
 			status: 'success',
 			message: sentMail
+		})
+		: res.status(502).json({
+			status: 'error',
+			message: 'Ошибка доставки'
+		})
+
+	}
+)
+app.get('/api/v1/get_messages', 
+	async (req, res) => {
+		let getMessages = await chatAPI.getMessages()
+		return (getMessages)  
+		? res.status(200).json({
+			status: 'success',
+			message: getMessages
+		})
+		: res.status(502).json({
+			status: 'error',
+			message: 'Ошибка доставки'
+		})
+
+	}
+)
+
+app.post('/api/v1/create_message', 
+	async (req, res) => {
+		let createMessage = await chatAPI.createMessage(req.body)
+		let getMessages = await chatAPI.getMessages()
+
+		return (getMessages)  
+		? res.status(200).json({
+			status: 'success',
+			message: getMessages
 		})
 		: res.status(502).json({
 			status: 'error',
