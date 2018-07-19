@@ -59,11 +59,12 @@ module.exports = {
       
   },
   createMessage(props){
-    let params = props[0]
+    let params = props[0],
+    time = new Date()
     console.log(params)
     return {
       text: `INSERT INTO chat_messages (user_name, img, content, created_at) VALUES ($1, $2, $3, $4) RETURNING id;`,
-      values: [params.user_name, params.img, params.content, new Date()]
+      values: [params.user_name, params.img, params.content, `${time.getHours() < 10 && '0'}${time.getHours()}:${time.getMinutes()}`]
     }    
   },
   getMessages(){
