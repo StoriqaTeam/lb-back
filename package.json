@@ -36,6 +36,7 @@
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
     "nodemailer": "^4.6.7",
+    "passport": "^0.4.0",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.38.0",

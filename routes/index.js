@@ -11,9 +11,8 @@ module.exports = (app) => {
     app.post('/api/v1/signin', authController.signin);
     app.post('/api/v1/signup', authController.signup);
     app.get('/api/v1/users', usersController.list);
-    // app.get('/api/products/:id', productsController.get);
-    // app.post('/api/products', productsController.create);
-    // app.put('/api/products/:id', productsController.update);
+    app.get('/api/users/:id', auth, usersController.get);
+    app.put('/api/users/:id', auth, usersController.update);
     app.delete('/api/v1/users/:id', auth, usersController.destroy);
 
 

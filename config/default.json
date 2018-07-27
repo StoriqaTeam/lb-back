@@ -1,10 +1,3 @@
 {
-  "jwtPrivateKey": "lb-key",
-  "database": {
-    "username": "lb",
-    "password": "2732415",
-    "database": "lb",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
-  }
+  "jwtPrivateKey": "lb-key"
 }
