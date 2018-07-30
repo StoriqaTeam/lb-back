@@ -17,10 +17,14 @@ module.exports = (app) => {
 
     require('./passport')(app);
 
+    // app.get(baseUrl + '/2fa', authController.google2fa);
+
     app.get(baseUrl + '/users', usersController.list);
     app.get(baseUrl + '/users/:id', auth, usersController.get);
     app.put(baseUrl + '/users/:id', auth, usersController.update);
     app.delete(baseUrl + '/users/:id', auth, usersController.destroy);
+
+    app.get(baseUrl + '/user/profile', auth, usersController.profile);
 
 
     app.get('*', (req, res) => res.status(404).send({

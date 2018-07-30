@@ -43,8 +43,10 @@
     "passport-twitter": "^1.0.4",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
+    "qrcode": "^1.2.0",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.0.0",
+    "speakeasy": "^2.0.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",
     "webpack-hot-middleware": "^2.22.2"

@@ -20,8 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = (models) => {
         // associations can be defined here
     };
-    User.prototype.generateAuthToken = () => {
-        const token = jwt.sign(this, config.get('jwtPrivateKey'));
+    User.prototype.generateAuthToken = (data) => {
+        //console.log(data.id, data.email);
+        const token = jwt.sign(data, config.get('jwtPrivateKey'));
         return token;
     };
     return User;

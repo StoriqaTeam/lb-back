@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const _ = require('lodash');
 const User = require('../models').User;
+const speakeasy = require('speakeasy');
 // const userHelper = require('../helpers/user');
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) return res.status(400).send('Invalid email or password.');
 
-        const token = user.generateAuthToken();
+        const token = user.generateAuthToken({id: user.id, email: user.email});
         res.header('x-auth-token', token).send({token: token});
     },
     async signup(req, res) {
@@ -39,10 +40,15 @@ module.exports = {
         await user.save();
         //user = await userHelper.createUser(req.body);
 
-        const token = user.generateAuthToken();
+        const token = user.generateAuthToken({id: user.id, email: user.email});
         // res.status(200).send(token);
         res.header('x-auth-token', token)
             .send(_.pick(user, ['id', 'name', 'email', 'ref_code']));
+    },
+    async google2fa(req, res) {
+        let secret = speakeasy.generateSecret({length: 8});
+        console.log(secret.base32);
+        res.status(200).send({secret:secret.base32});
     }
 
 };
