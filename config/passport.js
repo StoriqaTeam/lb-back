@@ -84,9 +84,9 @@ module.exports = function (passport) {
         },
         (token, refreshToken, profile, done) => {
             process.nextTick(() => {
-                User.findOne({
-                    'facebook.id': profile.id
-                }, (err, user) => {
+                User.findOne(
+                    {where: {email: (profile.emails[0].value || '').toLowerCase()}},
+                    (err, user) => {
                     if (err) {
                         return done(err);
                     }
@@ -95,10 +95,10 @@ module.exports = function (passport) {
 
                     } else {
                         let newUser = new User();
-                        newUser.facebook.id = profile.id;
-                        newUser.facebook.token = token;
-                        newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                        newUser.facebook.email = (profile.emails[0].value || '').toLowerCase();
+                        newUser.provider_type = "facebook";
+                        // newUser.facebook.token = token;
+                        newUser.name = profile.name.givenName + ' ' + profile.name.familyName;
+                        newUser.email = (profile.emails[0].value || '').toLowerCase();
 
                         newUser.save((err) => {
                             if (err) {
@@ -118,9 +118,8 @@ module.exports = function (passport) {
         },
         (token, tokenSecret, profile, done) => {
             process.nextTick(() => {
-                User.findOne({
-                    'twitter.id': profile.id
-                }, function (err, user) {
+                User.findOne({where: {'email': profile.username}},
+                    function (err, user) {
                     if (err) {
                         return done(err);
                     }
@@ -130,10 +129,9 @@ module.exports = function (passport) {
 
                     } else {
                         let newUser = new User();
-                        newUser.twitter.id = profile.id;
-                        newUser.twitter.token = token;
-                        newUser.twitter.username = profile.username;
-                        newUser.twitter.displayName = profile.displayName;
+                        newUser.provider_type = "twitter";
+                        newUser.email = profile.username;
+                        newUser.name = profile.displayName;
                         newUser.save((err) => {
                             if (err) {
                                 throw err;
@@ -152,8 +150,7 @@ module.exports = function (passport) {
         },
         (token, refreshToken, profile, done) => {
             process.nextTick(() => {
-                User.findOne({
-                    'google.id': profile.id
+                User.findOne({where: {email: profile.emails[0].value}
                 }, (err, user) => {
                     if (err) {
                         return done(err);
@@ -164,10 +161,9 @@ module.exports = function (passport) {
 
                     } else {
                         let newUser = new User();
-                        newUser.google.id = profile.id;
-                        newUser.google.token = token;
-                        newUser.google.name = profile.displayName;
-                        newUser.google.email = profile.emails[0].value;
+                        newUser.provider_type = "google";
+                        newUser.name = profile.displayName;
+                        newUser.email = profile.emails[0].value;
                         newUser.save((err) => {
                             if (err) {
                                 throw err;
