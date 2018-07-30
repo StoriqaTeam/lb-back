@@ -17,7 +17,7 @@ module.exports = function (passport) {
         });
     });
 
-    passport.use('local-signup', new LocalStrategy({
+    /*passport.use('local-signup', new LocalStrategy({
             usernameField: 'email',
             passwordField: 'password',
             passReqToCallback: true,
@@ -74,7 +74,7 @@ module.exports = function (passport) {
                 return done(null, user);
             });
         }
-    ));
+    ));*/
 
     passport.use(new FacebookStrategy({
             clientID: socialConfig.facebookAuth.clientID,
