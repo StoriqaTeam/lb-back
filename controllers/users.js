@@ -54,5 +54,18 @@ module.exports = {
                     .catch(error => res.status(400).send(error));
             })
             .catch(error => res.status(400).send(error));
+    },
+    profile(req, res) {
+        console.log(req.user);
+        return User.findById(req.user.id)
+            .then(user => {
+                if (!user) {
+                    return res.status(404).send({
+                        message: 'User Not Found',
+                    });
+                }
+                return res.status(200).send(user);
+            })
+            .catch(error => res.status(400).send(error));
     }
 };
