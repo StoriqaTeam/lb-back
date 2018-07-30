@@ -1,19 +1,26 @@
+const config = require("config");
+const baseUrl = config.get("base_url");
+
 const usersController = require('../controllers').users;
 const authController = require('../controllers').auth;
 
 const auth = require('../middleware/auth');
 
 module.exports = (app) => {
-    app.get('/api/v1/', (req, res) => res.status(200).send({
+    app.get(baseUrl + '/', (req, res) => res.status(200).send({
         message: 'Welcome to the API v1.0!',
     }));
 
-    app.post('/api/v1/signin', authController.signin);
-    app.post('/api/v1/signup', authController.signup);
-    app.get('/api/v1/users', usersController.list);
-    app.get('/api/users/:id', auth, usersController.get);
-    app.put('/api/users/:id', auth, usersController.update);
-    app.delete('/api/v1/users/:id', auth, usersController.destroy);
+    app.post(baseUrl + '/signin', authController.signin);
+    app.post(baseUrl + '/signup', authController.signup);
+
+
+    require('./passport')(app);
+
+    app.get(baseUrl + '/users', usersController.list);
+    app.get(baseUrl + '/users/:id', auth, usersController.get);
+    app.put(baseUrl + '/users/:id', auth, usersController.update);
+    app.delete(baseUrl + '/users/:id', auth, usersController.destroy);
 
 
     app.get('*', (req, res) => res.status(404).send({

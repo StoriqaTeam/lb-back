@@ -1,3 +1,6 @@
 {
+  "base_url": "/api/v1",
+  "back_host": "http://localhost:3000/",
+  "front_host": "http://localhost/",
   "jwtPrivateKey": "lb-key"
 }

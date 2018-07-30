@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const config = require('config');
 
@@ -12,8 +11,8 @@ app.use(express.json());
 
 app.use(cookieParser());
 app.disable('x-powered-by');
-app.listen(process.env.PORT || 5000);
-console.log(`App listening on port ${process.env.PORT || 5000}`)
+app.listen(process.env.PORT || 3000);
+console.log(`App listening on port ${process.env.PORT || 3000}`);
 
 app.use((req, res, next) => {
     let allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud', 'https://lb-front.stq.cloud'];
