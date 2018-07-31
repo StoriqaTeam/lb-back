@@ -17,7 +17,8 @@ module.exports = (app) => {
 
     require('./passport')(app);
 
-    // app.get(baseUrl + '/2fa', authController.google2fa);
+    app.get(baseUrl + '/2fa', authController.google2fa);
+    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
 
     app.get(baseUrl + '/users', usersController.list);
     app.get(baseUrl + '/users/:id', auth, usersController.get);
