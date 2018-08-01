@@ -6,6 +6,7 @@ const _ = require('lodash');
 const User = require('../models').User;
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
+const mailer = require("../helpers/mailer");
 // const userHelper = require('../helpers/user');
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
         const {error} = validate(req.body);
         if (error) return res.status(400).json({error: error.details[0].message});
 
-        let user = await User.findOne({email: req.body.email});
+        let user = await User.findOne({where: {email: req.body.email}});
         if (!user) return res.status(400).json({ error: 'Invalid email or password.'});
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
@@ -45,10 +46,27 @@ module.exports = {
         //user = await userHelper.createUser(req.body);
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
+
+        const activationCode = crypto.createHash('md5').update(req.body.email+user.id).digest('hex');
+        await mailer.sendActivation(user.email, activationCode);
         // res.status(200).send(token);
         res.header('x-auth-token', token)
             .send(_.pick(user, ['id', 'name', 'email', 'ref_code']));
     },
+
+    async activate(req, res) {
+        let user = await User.findOne({where: {email: req.body.email}});
+        if (!user) return res.status(400).json({ error: 'Invalid email.'});
+
+        const userHash = crypto.createHash('md5').update(req.body.email+user.id).digest('hex');
+        if (userHash != req.body.code) return res.status(400).json({ error: 'Invalid activation code.'});
+
+        user.is_verified = true;
+        await user.save();
+
+        res.status(200).json({'message': 'User successfull activated'});
+    },
+
     async google2fa(req, res) {
         let secret = speakeasy.generateSecret({length: 8, name: config.get('2fa_name')});
         let token = speakeasy.totp({

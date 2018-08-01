@@ -10,5 +10,10 @@
     "private_key": "3fDcd6d738baAd51c10CbB9374D345970128872BC367111d22F91945689a3b77",
     "ipn_secret": "9mh5tqnVqr6y86VN2YunZTupvKG6Pv3m",
     "ipn_url": ""
+  },
+  "mailer": {
+    "password": "Ugol115115",
+    "from": "coffee3shop@gmail.com"
   }
+
 }

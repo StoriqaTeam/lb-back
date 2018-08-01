@@ -13,7 +13,7 @@ module.exports = (app) => {
 
     app.post(baseUrl + '/signin', authController.signin);
     app.post(baseUrl + '/signup', authController.signup);
-
+    app.post(baseUrl + '/user/activate', authController.activate);
 
     require('./passport')(app);
 
