@@ -16,4 +16,9 @@ module.exports = {
         clientSecret: 'xgG-R5wsFOJ_qKR-sTRXzYLS',
         callbackURL: config.get('back_host')+'auth/google/callback',
     },
+    telegramAuth: {
+        clientID: '',
+        clientSecret: '',
+        callbackURL: config.get('back_host')+'auth/telegram/callback',
+    }
 };

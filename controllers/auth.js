@@ -1,9 +1,11 @@
 const Joi = require('joi');
+const config = require('config');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const _ = require('lodash');
 const User = require('../models').User;
 const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
 // const userHelper = require('../helpers/user');
 
 module.exports = {
@@ -46,9 +48,34 @@ module.exports = {
             .send(_.pick(user, ['id', 'name', 'email', 'ref_code']));
     },
     async google2fa(req, res) {
-        let secret = speakeasy.generateSecret({length: 8});
-        console.log(secret.base32);
-        res.status(200).send({secret:secret.base32});
+        let secret = speakeasy.generateSecret({length: 8, name: config.get('2fa_name')});
+        let token = speakeasy.totp({
+            secret: secret.base32,
+            encoding: 'base32'
+        });
+        QRCode.toDataURL(secret.otpauth_url)
+            .then(image_data => {
+                res.status(200).send({
+                    secret: secret.base32,
+                    image: image_data,
+                    token: token
+                });
+            });
+    },
+    async google2fa_enable(req, res) {
+        let user = await User.findOne({where: {email: req.user.email}});
+        let isVerify = speakeasy.totp.verify({
+            secret: req.body.secret,
+            encoding: 'base32',
+            token: req.body.token
+        });
+        if (isVerify) {
+            user.google2fa_secret = req.body.secret;
+            await user.save();
+            res.status(200).send({message: '2fa enable'});
+        } else {
+            res.status(400).send({message: 'token not equal'})
+        }
     }
 
 };

@@ -25,5 +25,8 @@ module.exports = (sequelize, DataTypes) => {
         const token = jwt.sign(data, config.get('jwtPrivateKey'));
         return token;
     };
+    // User.hook("beforeCreate", function(user) {
+    //     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
+    // });
     return User;
 };

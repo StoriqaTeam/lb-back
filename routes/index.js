@@ -17,7 +17,8 @@ module.exports = (app) => {
 
     require('./passport')(app);
 
-    // app.get(baseUrl + '/2fa', authController.google2fa);
+    app.get(baseUrl + '/2fa', authController.google2fa);
+    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
 
     app.get(baseUrl + '/users', usersController.list);
     app.get(baseUrl + '/users/:id', auth, usersController.get);
@@ -25,7 +26,6 @@ module.exports = (app) => {
     app.delete(baseUrl + '/users/:id', auth, usersController.destroy);
 
     app.get(baseUrl + '/user/profile', auth, usersController.profile);
-
 
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',
