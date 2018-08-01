@@ -14,20 +14,21 @@ module.exports = {
         if (error) return res.status(400).send(error.details[0].message);
 
         let user = await User.findOne({email: req.body.email});
-        if (!user) return res.status(400).send('Invalid email or password.');
+        if (!user) return res.status(400).json({ error: 'Invalid email or password.'});
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-        if (!validPassword) return res.status(400).send('Invalid email or password.');
+        if (!validPassword) return res.status(400).json({ error: 'Invalid email or password.'});
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
         res.header('x-auth-token', token).send({token: token});
     },
     async signup(req, res) {
         const {error} = validate(req.body);
+        console.log(req.body)
         if (error) return res.status(400).send(error.details[0].message);
 
         let user = await User.findOne({where: {email: req.body.email}});
-        if (user) return res.status(400).send('User already registered.');
+        if (user) return res.status(400).json({ error: 'User already registered.'});
 
         user = new User(_.pick(req.body, ['name', 'email', 'password']));
         const salt = await bcrypt.genSalt(10);
