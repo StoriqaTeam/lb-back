@@ -150,13 +150,25 @@ module.exports = function (passport) {
         },
         (token, refreshToken, profile, done) => {
             process.nextTick(() => {
+                // User.findOne({where: {email: profile.emails[0].value}})
+                //     .then(user => {
+                //         //req.user = user;
+                //         if (!user) {
+                //             console.log('User Not Found');
+                //         }
+                //     })
+                //     .catch(error => console.log("dsd",error));
+
                 User.findOne({where: {email: profile.emails[0].value}
                 }, (err, user) => {
+                    console.log("user",user);
                     if (err) {
+                        console.log('err',err);
                         return done(err);
                     }
 
                     if (user) {
+                        console.log(user);
                         return done(null, user);
 
                     } else {
