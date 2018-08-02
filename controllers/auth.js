@@ -77,7 +77,7 @@ module.exports = {
         await user.save();
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
-        return res.header('x-auth-token', token).send({token: token, user: user});
+        return res.header('x-auth-token', token).json({token: token, user: user});
     },
 
     async google2fa(req, res) {
