@@ -70,7 +70,7 @@ module.exports = {
 
         let user = await User.findOne({where: {email: data.email}});
         if (!user) {
-            user = new User({email: data.email});
+            user = new User({name: data.name, email: data.email});
             user.is_verified = true;
         }
 

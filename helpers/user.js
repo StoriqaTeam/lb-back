@@ -27,7 +27,6 @@ module.exports = {
         return user;
     },
     getUserInfoBySocialProvider(provider, profile) {
-        console.log(provider)
         switch (provider){
            case 'google':  
               return {
@@ -49,6 +48,7 @@ module.exports = {
                 email: profile.username,
                 name: profile.first_name + ' ' + profile.last_name
             }
+
         }
     }
 };
