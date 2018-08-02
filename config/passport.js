@@ -87,6 +87,7 @@ module.exports = function (passport) {
                 User.findOne(
                     {where: {email: (profile.emails[0].value || '').toLowerCase()}},
                     (err, user) => {
+
                     if (err) {
                         return done(err);
                     }
@@ -117,13 +118,18 @@ module.exports = function (passport) {
             callbackURL: socialConfig.twitterAuth.callbackURL,
         },
         (token, tokenSecret, profile, done) => {
+        console.log('token', token);
+        console.log('tokensec', tokenSecret);
+        console.log('profile', profile);
+        console.log('done', done);
             process.nextTick(() => {
                 User.findOne({where: {'email': profile.username}},
                     function (err, user) {
                     if (err) {
                         return done(err);
                     }
-
+                        console.log("twerr",err);
+                        console.log("tw",user);
                     if (user) {
                         return done(null, user);
 
@@ -149,6 +155,10 @@ module.exports = function (passport) {
             callbackURL: socialConfig.googleAuth.callbackURL,
         },
         (token, refreshToken, profile, done) => {
+        console.log("token", token);
+        console.log("reftoken", refreshToken);
+        console.log("profile", profile);
+            console.log('done', done);
             process.nextTick(() => {
                 // User.findOne({where: {email: profile.emails[0].value}})
                 //     .then(user => {
@@ -163,7 +173,7 @@ module.exports = function (passport) {
                 }, (err, user) => {
                     console.log("user",user);
                     if (err) {
-                        console.log('err',err);
+                        console.log('err1',err);
                         return done(err);
                     }
 

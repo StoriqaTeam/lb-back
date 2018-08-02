@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const config = require('config');
+const passport = require("passport");
+const session = require('express-session');
+
 
 if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.');
@@ -12,6 +15,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.disable('x-powered-by');
 app.listen(process.env.PORT || 3000);
+
+app.use(session({ secret: 'lblb' }));
+app.use(passport.initialize());
+
 console.log(`App listening on port ${process.env.PORT || 3000}`);
 
 app.use((req, res, next) => {

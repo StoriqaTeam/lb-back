@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         email: DataTypes.STRING,
         password: DataTypes.STRING,
         is_verified: DataTypes.BOOLEAN,
+        verification_code: DataTypes.STRING,
         amount: DataTypes.DOUBLE,
         ref_id: DataTypes.INTEGER,
         ref_code: DataTypes.STRING,

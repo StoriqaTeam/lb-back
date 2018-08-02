@@ -34,8 +34,11 @@ module.exports = {
 
         user = new User(_.pick(req.body, ['name', 'email', 'password']));
         const salt = await bcrypt.genSalt(10);
+        const activationCode = crypto.createHash('md5').update(req.body.email+salt).digest('hex');
+
         user.password = await bcrypt.hash(user.password, salt);
         user.ref_code = crypto.createHash('md5').update(req.body.email).digest('hex');
+        user.verification_code = activationCode;
 
         if (req.body.ref) {
             let refUser = await User.findOne({where: {ref_code: req.body.ref}});
@@ -47,7 +50,6 @@ module.exports = {
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
 
-        const activationCode = crypto.createHash('md5').update(req.body.email+user.id).digest('hex');
         await mailer.sendActivation(user.email, activationCode);
         // res.status(200).send(token);
         res.header('x-auth-token', token)
@@ -55,11 +57,8 @@ module.exports = {
     },
 
     async activate(req, res) {
-        let user = await User.findOne({where: {email: req.body.email}});
-        if (!user) return res.status(400).json({ error: 'Invalid email.'});
-
-        const userHash = crypto.createHash('md5').update(req.body.email+user.id).digest('hex');
-        if (userHash != req.body.code) return res.status(400).json({ error: 'Invalid activation code.'});
+        let user = await User.findOne({where: {verification_code: req.body.code}});
+        if (!user) return res.status(400).json({ error: 'Invalid activation code.'});
 
         user.is_verified = true;
         await user.save();
