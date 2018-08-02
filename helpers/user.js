@@ -25,5 +25,29 @@ module.exports = {
 
         user.save();
         return user;
+    },
+    getUserInfoBySocialProvider(provider, profile) {
+        let user;
+
+        if (provider == 'google') {
+            user = {
+                'email': profile.emails[0].value
+            };
+        } else if (provider == 'twitter') {
+            user = {
+                'email': profile.username
+            };
+
+        } else if (provider == 'facebook') {
+            user = {
+                'email': (profile.emails[0].value).toLowerCase(),
+                'name': profile.name.givenName + ' ' + profile.name.familyName
+            };
+        } else if (provider == 'telegram') {
+            user = {
+                'email': ''
+            };
+        }
+        return user;
     }
 };

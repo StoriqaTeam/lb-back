@@ -16,8 +16,8 @@ app.use(cookieParser());
 app.disable('x-powered-by');
 app.listen(process.env.PORT || 3000);
 
-app.use(session({ secret: 'lblb' }));
-app.use(passport.initialize());
+// app.use(session({ secret: 'lblb' }));
+// app.use(passport.initialize());
 
 console.log(`App listening on port ${process.env.PORT || 3000}`);
 

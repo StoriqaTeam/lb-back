@@ -7,7 +7,7 @@ const User = require('../models').User;
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const mailer = require("../helpers/mailer");
-// const userHelper = require('../helpers/user');
+const userHelper = require('../helpers/user');
 
 module.exports = {
     async signin(req, res) {
@@ -29,7 +29,6 @@ module.exports = {
         if (error) return res.status(400).send(error.details[0].message);
 
         let user = await User.findOne({where: {email: req.body.email}});
-        console.log(user)
         if (user) return res.status(409).json({ error: 'User already registered.'});
 
         user = new User(_.pick(req.body, ['name', 'email', 'password']));
@@ -64,6 +63,21 @@ module.exports = {
         await user.save();
 
         res.status(200).json({'message': 'User successfull activated'});
+    },
+    async authSocial(req, res) {
+        let data = await userHelper.getUserInfoBySocialProvider(req.body.provider, req.body.profile);
+
+        let user = await User.findOne({where: {email: data.email}});
+        if (!user) {
+            user = new User({email: data.email});
+            user.is_verified = true;
+        }
+
+        user.provider_type = req.body.provider;
+        await user.save();
+
+        const token = user.generateAuthToken({id: user.id, email: user.email});
+        return res.header('x-auth-token', token).send({token: token, user: user});
     },
 
     async google2fa(req, res) {
@@ -109,4 +123,5 @@ function validate(req) {
 
     return Joi.validate(req, schema);
 }
+
 
