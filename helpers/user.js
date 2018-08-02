@@ -45,7 +45,8 @@ module.exports = {
             };
         } else if (provider == 'telegram') {
             user = {
-                'email': ''
+                'email': profile.username,
+                'name': profile.first_name + ' ' + profile.last_name
             };
         }
         return user;
