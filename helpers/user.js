@@ -31,11 +31,13 @@ module.exports = {
 
         if (provider == 'google') {
             user = {
-                'email': profile.emails[0].value
+                'email': profile.emails[0].value,
+                'name': ''
             };
         } else if (provider == 'twitter') {
             user = {
-                'email': profile.username
+                'email': profile.username,
+                'name': ''
             };
 
         } else if (provider == 'facebook') {
