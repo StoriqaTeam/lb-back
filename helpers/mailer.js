@@ -14,7 +14,7 @@ let transporter = mailer.createTransport({
 
 module.exports = {
     sendActivation(email, code) {
-        let link = config.get('front_host')+'/user/activate?key='+code;
+        let link = config.get('front_host')+'/user/activate?email='+email+'&key='+code;
         let data = {
             from: "LuckyBlock <"+config.get('mailer.from')+">",
             to: email,
