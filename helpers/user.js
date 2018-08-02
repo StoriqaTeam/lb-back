@@ -27,28 +27,28 @@ module.exports = {
         return user;
     },
     getUserInfoBySocialProvider(provider, profile) {
-        let user;
-
-        if (provider == 'google') {
-            user = {
-                'email': profile.emails[0].value
-            };
-        } else if (provider == 'twitter') {
-            user = {
-                'email': profile.username
-            };
-
-        } else if (provider == 'facebook') {
-            user = {
-                'email': (profile.emails[0].value).toLowerCase(),
-                'name': profile.name.givenName + ' ' + profile.name.familyName
-            };
-        } else if (provider == 'telegram') {
-            user = {
-                'email': profile.username,
-                'name': profile.first_name + ' ' + profile.last_name
-            };
+        console.log(provider)
+        switch (provider){
+           case 'google':  
+              return {
+               email: profile.emails[0].value,
+               name: profile.name.givenName + ' ' + profile.name.familyName
+            }
+            case 'twitter':
+              return {
+                email: profile.username
+              }
+            case 'facebook': 
+              return {
+                email: profile.email.toLowerCase(),
+                name: profile.first_name + ' ' + profile.lastName
+              }
+            case 'telegram':
+            default:
+              return { 
+                email: profile.username,
+                name: profile.first_name + ' ' + profile.last_name
+            }
         }
-        return user;
     }
 };

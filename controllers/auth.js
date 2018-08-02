@@ -15,7 +15,7 @@ module.exports = {
         if (error) return res.status(400).json({error: error.details[0].message});
 
         let user = await User.findOne({where: {email: req.body.email}});
-        if (!user) return res.status(400).json({ error: 'Invalid email or password.'});
+        if (!user || !user.password) return res.status(400).json({ error: 'Invalid email or password.'});
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) return res.status(400).json({ error: 'Invalid email or password.'});
@@ -65,6 +65,7 @@ module.exports = {
         res.status(200).json({'message': 'User successfull activated'});
     },
     async authSocial(req, res) {
+        console.log(req.body)
         let data = await userHelper.getUserInfoBySocialProvider(req.body.provider, req.body.profile);
 
         let user = await User.findOne({where: {email: data.email}});

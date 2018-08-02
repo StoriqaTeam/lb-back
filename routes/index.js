@@ -15,6 +15,7 @@ module.exports = (app) => {
     app.post(baseUrl + '/signup', authController.signup);
     app.post(baseUrl + '/user/activate', authController.activate);
     app.post(baseUrl + '/auth-social', authController.authSocial);
+    app.post(baseUrl + '/auth/twitter', () => {});
 
     // require('./passport')(app);
 
