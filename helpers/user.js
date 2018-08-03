@@ -39,14 +39,15 @@ module.exports = {
               }
             case 'facebook': 
               return {
-                email: profile.email.toLowerCase(),
+                email: profile.email ? profile.email.toLowerCase() : '',
                 name: profile.first_name + ' ' + profile.lastName
               }
             case 'telegram':
             default:
               return { 
                 email: profile.username,
-                name: profile.first_name + ' ' + profile.last_name
+                name: profile.first_name + ' ' + profile.last_name,
+                ava: profile.photo_url
             }
 
         }
