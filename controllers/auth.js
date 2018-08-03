@@ -8,6 +8,8 @@ const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const mailer = require("../helpers/mailer");
 const userHelper = require('../helpers/user');
+const request = require('request');
+const socialConfig = require('../config/social');
 
 module.exports = {
     async signin(req, res) {
@@ -15,10 +17,10 @@ module.exports = {
         if (error) return res.status(400).json({error: error.details[0].message});
 
         let user = await User.findOne({where: {email: req.body.email}});
-        if (!user || !user.password) return res.status(400).json({ error: 'Invalid email or password.'});
+        if (!user || !user.password) return res.status(400).json({error: 'Invalid email or password.'});
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-        if (!validPassword) return res.status(400).json({ error: 'Invalid email or password.'});
+        if (!validPassword) return res.status(400).json({error: 'Invalid email or password.'});
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
         res.header('x-auth-token', token).send({token: token});
@@ -29,11 +31,11 @@ module.exports = {
         if (error) return res.status(400).send(error.details[0].message);
 
         let user = await User.findOne({where: {email: req.body.email}});
-        if (user) return res.status(409).json({ error: 'User already registered.'});
+        if (user) return res.status(409).json({error: 'User already registered.'});
 
         user = new User(_.pick(req.body, ['name', 'email', 'password']));
         const salt = await bcrypt.genSalt(10);
-        const activationCode = crypto.createHash('md5').update(req.body.email+salt).digest('hex');
+        const activationCode = crypto.createHash('md5').update(req.body.email + salt).digest('hex');
 
         user.password = await bcrypt.hash(user.password, salt);
         user.ref_code = crypto.createHash('md5').update(req.body.email).digest('hex');
@@ -57,7 +59,7 @@ module.exports = {
 
     async activate(req, res) {
         let user = await User.findOne({where: {verification_code: req.body.code}});
-        if (!user) return res.status(400).json({ error: 'Invalid activation code.'});
+        if (!user) return res.status(400).json({error: 'Invalid activation code.'});
 
         user.is_verified = true;
         await user.save();
@@ -79,6 +81,49 @@ module.exports = {
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
         return res.header('x-auth-token', token).json({token: token, user: user});
+    },
+
+    async authTwitter(req, res, next) {
+        request.post({
+            url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
+            oauth: {
+                consumer_key: socialConfig.twitterAuth.consumerKey,
+                consumer_secret: socialConfig.twitterAuth.consumerSecret,
+                token: req.query.oauth_token
+            },
+            form: { oauth_verifier: req.query.oauth_verifier }
+        }, function (err, r, body) {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+
+            const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            const parsedBody = JSON.parse(bodyString);
+
+            req.body['oauth_token'] = parsedBody.oauth_token;
+            req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
+            req.body['user_id'] = parsedBody.user_id;
+
+            next();
+        });
+    },
+
+    async authTwitterReverse(req, res) {
+        request.post({
+            url: 'https://api.twitter.com/oauth/request_token',
+            oauth: {
+                oauth_callback: "http%3A%2F%2Flocalhost%3A3000%2Ftwitter-callback",
+                consumer_key: socialConfig.twitterAuth.consumerKey,
+                consumer_secret: socialConfig.twitterAuth.consumerSecret
+            }
+        }, function (err, r, body) {
+            if (err) {
+                return res.status(500).json({message: err.message});
+            }
+
+            let jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            return res.json(JSON.parse(jsonStr));
+        });
     },
 
     async google2fa(req, res) {

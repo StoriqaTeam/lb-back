@@ -15,9 +15,8 @@ module.exports = (app) => {
     app.post(baseUrl + '/signup', authController.signup);
     app.post(baseUrl + '/user/activate', authController.activate);
     app.post(baseUrl + '/auth-social', authController.authSocial);
-    app.post(baseUrl + '/auth/twitter', () => {});
-
-    // require('./passport')(app);
+    app.post(baseUrl + '/auth/twitter', authController.authTwitter);
+    app.post(baseUrl + '/auth/twitter/reverse', authController.authTwitter);
 
     app.get(baseUrl + '/2fa', authController.google2fa);
     app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);

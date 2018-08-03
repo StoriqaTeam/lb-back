@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     };
     User.prototype.generateAuthToken = (data) => {
         //console.log(data.id, data.email);
-        const token = jwt.sign(data, config.get('jwtPrivateKey'));
+        const token = jwt.sign(data, config.get('jwtPrivateKey'), {expiresIn: 60 * 120});
         return token;
     };
     // User.hook("beforeCreate", function(user) {
