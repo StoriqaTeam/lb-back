@@ -44,7 +44,8 @@ module.exports = {
             case 'facebook':
                 return {
                     email: profile.email ? profile.email.toLowerCase() : '',
-                    name: profile.first_name + ' ' + profile.lastName
+                    name: profile.first_name + ' ' + profile.lastName,
+                    avatar: profile.picture ? profile.picture : ""
                 };
             case 'telegram':
             default:

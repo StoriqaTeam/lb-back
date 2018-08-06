@@ -23,12 +23,12 @@ module.exports = {
         if (!validPassword) return res.status(400).json({error: 'Invalid email or password.'});
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
-        res.header('x-auth-token', token).send({token: token});
+        res.header('x-auth-token', token).json({token: token, user: user});
     },
     async signup(req, res) {
         const {error} = validate(req.body);
-        console.log(req.body, error)
-        if (error) return res.status(400).send(error.details[0].message);
+        console.log(req.body, error);
+        if (error) return res.status(400).json(error.details[0].message);
 
         let user = await User.findOne({where: {email: req.body.email}});
         if (user) return res.status(409).json({error: 'User already registered.'});
@@ -53,8 +53,7 @@ module.exports = {
 
         await mailer.sendActivation(user.email, activationCode);
         // res.status(200).send(token);
-        res.header('x-auth-token', token)
-            .send(_.pick(user, ['id', 'name', 'email', 'ref_code']));
+        res.header('x-auth-token', token).json(user);
     },
 
     async activate(req, res) {
@@ -67,7 +66,6 @@ module.exports = {
         res.status(200).json({'message': 'User successfull activated'});
     },
     async authSocial(req, res) {
-        console.log(req.body)
         let data = await userHelper.getUserInfoBySocialProvider(req.body.provider, req.body.profile);
 
         let user = await User.findOne({where: {email: data.email}});
@@ -75,7 +73,12 @@ module.exports = {
             user = new User({name: data.name, email: data.email});
             user.is_verified = true;
         }
-
+        if (user.name != data.name) {
+            user.name = data.name;
+        }
+        if (user.avatar != data.avatar) {
+            user.avatar = data.avatar;
+        }
         user.provider_type = req.body.provider;
         await user.save();
 

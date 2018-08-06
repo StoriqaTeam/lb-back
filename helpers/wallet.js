@@ -8,9 +8,6 @@ module.exports = {
             headers: {'Authorization': config.get('anypaycoins.key')}
         })
             .then(response => {
-                if (response.data.Status == 'ok') {
-
-                }
                 return response.data.Result;
             })
             .catch(error => {
