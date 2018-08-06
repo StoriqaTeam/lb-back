@@ -84,6 +84,7 @@ module.exports = {
     },
 
     async authTwitter(req, res, next) {
+        console.log("tw", req.query);
         request.post({
             url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
             oauth: {
@@ -93,11 +94,15 @@ module.exports = {
             },
             form: { oauth_verifier: req.query.oauth_verifier }
         }, function (err, r, body) {
+            if (body == 'Reverse auth credentials are invalid') {
+                return res.status(500).json({ message: body });
+            }
             if (err) {
                 return res.status(500).json({ message: err.message });
             }
 
             const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            console.log("bstr", bodyString);
             const parsedBody = JSON.parse(bodyString);
 
             req.body['oauth_token'] = parsedBody.oauth_token;
