@@ -33,26 +33,26 @@ module.exports = {
         switch (provider) {
             case 'google':
                 return {
-                    email: profile.emails[0].value,
-                    name: profile.name.givenName + ' ' + profile.name.familyName,
-                    avatar: profile.image
+                    email: profile.emails[0].value ? profile.emails[0].value : profile.id,
+                    name: profile.name.givenName ? profile.name.givenName : "" + ' ' + profile.name.familyName ? profile.name.familyName : "",
+                    avatar: profile.image.url ? profile.image.url : ''
                 };
             case 'twitter':
                 return {
-                    email: profile.username
+                    email: profile.username ? profile.username : ""
                 };
             case 'facebook':
                 return {
                     email: profile.email ? profile.email.toLowerCase() : '',
-                    name: profile.first_name + ' ' + profile.lastName,
+                    name: profile.first_name ? profile.first_name : "" + ' ' + profile.lastName ? profile.lastName : '',
                     avatar: profile.picture.data.url ? profile.picture.data.url : ""
                 };
             case 'telegram':
             default:
                 return {
                     email: profile.username,
-                    name: profile.first_name + ' ' + profile.last_name,
-                    avatar: profile.photo_url
+                    name: profile.first_name ? profile.first_name : "" + ' ' + profile.last_name ? profile.last_name : "",
+                    avatar: profile.photo_url ? profile.photo_url : ''
                 }
 
         }
