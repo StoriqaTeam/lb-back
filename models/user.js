@@ -3,6 +3,7 @@ const config = require("config");
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const jwt = require("jsonwebtoken");
+const models = require("./index");
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -21,12 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     }, {});
     User.associate = (models) => {
         // associations can be defined here
+        User.hasMany(models.Wallet, {as: 'wallets', foreignKey: 'user_id', sourceKey: 'id'});
     };
     User.prototype.generateAuthToken = (data) => {
         //console.log(data.id, data.email);
         const token = jwt.sign(data, config.get('jwtPrivateKey'), {expiresIn: 60 * 120});
         return token;
     };
+    // User.hasMany(Wallet, {as: 'wallets', foreignKey: 'user_id', sourceKey: 'id'});
     // User.hook("beforeCreate", function(user) {
     //     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
     // });

@@ -4,6 +4,10 @@
   "front_host": "http://localhost/",
   "2fa_name": "",
   "jwtPrivateKey": "",
+  "anypaycoins": {
+      "key": "",
+      "url": ""
+  },
   "mailer": {
     "password": "",
     "from": ""
