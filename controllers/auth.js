@@ -117,7 +117,7 @@ module.exports = {
         request.post({
             url: 'https://api.twitter.com/oauth/request_token',
             oauth: {
-                oauth_callback: "http%3A%2F%2Flocalhost%3A3000%2Ftwitter-callback",
+                oauth_callback: config.get('front_host')+"twitter-callback",
                 consumer_key: socialConfig.twitterAuth.consumerKey,
                 consumer_secret: socialConfig.twitterAuth.consumerSecret
             }
