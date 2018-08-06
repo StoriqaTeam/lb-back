@@ -35,7 +35,7 @@ module.exports = {
                 return {
                     email: profile.emails[0].value,
                     name: profile.name.givenName + ' ' + profile.name.familyName,
-                    avatar: profile.image.url
+                    avatar: profile.image.data.url
                 };
             case 'twitter':
                 return {
