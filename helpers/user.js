@@ -35,7 +35,7 @@ module.exports = {
                 return {
                     email: profile.emails[0].value,
                     name: profile.name.givenName + ' ' + profile.name.familyName,
-                    avatar: profile.image.data.url
+                    avatar: profile.image
                 };
             case 'twitter':
                 return {
@@ -45,7 +45,7 @@ module.exports = {
                 return {
                     email: profile.email ? profile.email.toLowerCase() : '',
                     name: profile.first_name + ' ' + profile.lastName,
-                    avatar: profile.picture ? profile.picture : ""
+                    avatar: profile.picture.data.url ? profile.picture.data.url : ""
                 };
             case 'telegram':
             default:
