@@ -27,7 +27,8 @@ module.exports = (app) => {
     app.delete(baseUrl + '/users/:id', auth, usersController.destroy);
 
     app.get(baseUrl + '/user/profile', auth, usersController.profile);
-    app.get(baseUrl + '/user/wallet', auth, usersController.getAddress);
+    app.get(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
+    app.get(baseUrl + '/send_ref', auth, usersController.sendRef);
 
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',

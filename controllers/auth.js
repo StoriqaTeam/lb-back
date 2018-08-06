@@ -79,6 +79,7 @@ module.exports = {
         if (user.avatar != data.avatar) {
             user.avatar = data.avatar;
         }
+        user.ref_code = crypto.createHash('md5').update(user.email).digest('hex');
         user.provider_type = req.body.provider;
         await user.save();
 

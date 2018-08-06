@@ -1,6 +1,7 @@
 const User = require('../models').User;
 const Wallet = require('../models').Wallet;
 const walletGenerator = require('../helpers/wallet');
+const mailer = require("../helpers/mailer");
 
 module.exports = {
     list(req, res) {
@@ -92,5 +93,14 @@ module.exports = {
                 return res.status(200).json(wallet);
             })
             .catch(error => res.status(400).send(error));
+    },
+    sendRef(req, res) {
+        const email = req.body.email;
+        const refCode = req.body.id;
+
+        if (refCode == req.body.user.ref_code) {
+            mailer.sendRef(email, refCode);
+            return res.status(200).json({message: "success send"});
+        }
     }
 };
