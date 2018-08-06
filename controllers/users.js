@@ -8,27 +8,27 @@ module.exports = {
         return User
             .all()
             .then(users => res.status(200).send(users))
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).json({message: error}));
     },
     get(req, res) {
         return User
             .findById(req.params.id)
             .then(user => {
                 if (!user) {
-                    return res.status(404).send({
+                    return res.status(404).json({
                         message: 'User Not Found',
                     });
                 }
-                return res.status(200).send(user);
+                return res.status(200).json(user);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).json({message: error}));
     },
     update(req, res) {
         return User
             .findById(req.params.id)
             .then(user => {
                 if (!user) {
-                    return res.status(404).send({
+                    return res.status(404).json({
                         message: 'User Not Found',
                     });
                 }
@@ -37,41 +37,41 @@ module.exports = {
                         name: req.body.name || user.name,
                         email: req.body.email || user.email
                     })
-                    .then(() => res.status(200).send(user))
-                    .catch((error) => res.status(400).send(error));
+                    .then(() => res.status(200).json(user))
+                    .catch((error) => res.status(400).json({message: error}));
             })
-            .catch((error) => res.status(400).send(error));
+            .catch((error) => res.status(400).json({message: error}));
     },
     destroy(req, res) {
         return User
             .findById(req.params.id)
             .then(user => {
                 if (!user) {
-                    return res.status(400).send({
+                    return res.status(400).json({
                         message: 'User Not Found',
                     });
                 }
                 return user
                     .destroy()
-                    .then(() => res.status(200).send({message: 'User deleted.'}))
-                    .catch(error => res.status(400).send(error));
+                    .then(() => res.status(200).json({message: 'User deleted.'}))
+                    .catch(error => res.status(400).json({message: error}));
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).json({message: error}));
     },
     profile(req, res) {
         // console.log("user", req.user);
         return User.findById(req.user.id)
             .then(user => {
                 if (!user) {
-                    return res.status(404).send({
+                    return res.status(404).json({
                         message: 'User Not Found',
                     });
                 }
                 // let address = walletGenerator.generateAddress().then(address => console.log(address));
                 // console.log("address", address);
-                return res.status(200).send(user);
+                return res.status(200).json(user);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).json({message: error}));
     },
     getAddress(req, res) {
         return Wallet.findOne({where: {user_id: req.user.id}})
@@ -88,19 +88,19 @@ module.exports = {
 
                             return res.status(200).json(wallet);
                         })
-                        .catch(error => res.status(400).send(error));
+                        .catch(error => res.status(400).json({message: error}));
                 }
                 return res.status(200).json(wallet);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).json({message: error}));
     },
     sendRef(req, res) {
         const email = req.body.email;
         const refCode = req.body.id;
-
-        if (refCode == req.body.user.ref_code) {
+        if (refCode) {
             mailer.sendRef(email, refCode);
             return res.status(200).json({message: "success send"});
         }
+        return res.status(400).json({message: "Error send"});
     }
 };

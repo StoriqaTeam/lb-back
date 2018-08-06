@@ -28,7 +28,7 @@ module.exports = (app) => {
 
     app.get(baseUrl + '/user/profile', auth, usersController.profile);
     app.get(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
-    app.get(baseUrl + '/send_ref', auth, usersController.sendRef);
+    app.post(baseUrl + '/send_ref', auth, usersController.sendRef);
 
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',
