@@ -43,7 +43,7 @@ module.exports = {
                 };
             case 'facebook':
                 return {
-                    email: profile.email ? profile.email.toLowerCase() : '',
+                    email: profile.email ? profile.email : profile.id,
                     name: profile.first_name ? profile.first_name : "" + ' ' + profile.lastName ? profile.lastName : '',
                     avatar: profile.picture.data.url ? profile.picture.data.url : ""
                 };
