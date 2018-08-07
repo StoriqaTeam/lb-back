@@ -1,4 +1,5 @@
 const Message = require('../models').Message;
+const User = require('../models').User;
 
 module.exports = {
     list(req, res) {
@@ -16,13 +17,15 @@ module.exports = {
             .then(messages => res.status(200).json(messages))
             .catch(error => res.status(400).json({message: error}));
     },
-    create(req, res) {
+    async create(req, res) {
         if (req.body.content) {
+            let user = await User.findById(req.body.user_id);
             return Message
                 .create({
                     user_id: req.body.user_id ? req.body.user_id : 0,
-                    user_name: req.body.user_name ? req.body.user_name : "",
+                    user_name: req.body.user_name ? req.body.user_name : user.name,
                     content: req.body.content,
+                    avatar: user.avatar,
                     is_active: true
                 })
                 .then(message => {
