@@ -73,8 +73,13 @@ module.exports = {
             })
             .catch(error => res.status(400).json({message: error}));
     },
-    getAddress(req, res) {
-        return Wallet.findOne({where: {user_id: req.user.id}})
+    async getAddress(req, res) {
+        let user_id = req.body.user_id;
+        let user = await User.findById(user_id);
+        if (!user) return res.status(404).json({
+            message: 'User Not Found',
+        });
+        return Wallet.findOne({where: {user_id: user_id}})
             .then(wallet => {
 
                 if (!wallet) {
