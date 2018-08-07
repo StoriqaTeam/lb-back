@@ -85,6 +85,7 @@ module.exports = {
                 if (!wallet) {
                     return walletGenerator.generateAddress()
                         .then(address => {
+                            wallet = new Wallet;
                             wallet.user_id = user_id;//req.user.id;
                             wallet.address = address[0].Address;
                             wallet.currency = address[0].Currency;
