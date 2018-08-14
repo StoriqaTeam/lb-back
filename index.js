@@ -22,7 +22,7 @@ app.listen(process.env.PORT || 3000);
 console.log(`App listening on port ${process.env.PORT || 3000}`);
 
 app.use((req, res, next) => {
-	console.log(req.headers.origin)
+	// console.log(req.headers.origin)
     let allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud', 'https://lb-front.stq.cloud'];
     let origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
@@ -35,9 +35,3 @@ app.use((req, res, next) => {
 });
 
 require('./routes')(app);
-
-
-app.get('*', 
-  (req, res) => res.status(404).json({status: false})
-)
-

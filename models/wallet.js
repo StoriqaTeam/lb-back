@@ -15,7 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         // lasttx: DataTypes.STRING,
         is_active: DataTypes.BOOLEAN,
         is_confirmed: DataTypes.BOOLEAN,
-        balance: DataTypes.FLOAT
+        balance: {
+            type: DataTypes.DECIMAL,
+            defaultValue: 0,
+            validate: {min: 0}
+        }
     }, {});
     Wallet.associate = function (models) {
         Wallet.belongsTo(models.User, {foreignKey: 'user_id'});

@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         avatar: DataTypes.STRING,
         is_verified: DataTypes.BOOLEAN,
         verification_code: DataTypes.STRING,
-        amount: DataTypes.DOUBLE,
+        amount: {
+            type: DataTypes.DECIMAL,
+            defaultValue: 0,
+            validate: {min: 0}
+        },
         ref_id: DataTypes.INTEGER,
         ref_code: DataTypes.STRING,
         google2fa_secret: DataTypes.STRING,

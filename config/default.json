@@ -11,6 +11,9 @@
   "mailer": {
     "password": "",
     "from": ""
+  },
+  "logger": {
+    "name": "lb-back",
+    "path": ""
   }
-
 }
