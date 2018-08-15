@@ -65,7 +65,8 @@ export class DepositWatcher extends Watcher {
                     tx_hash: transaction.Txid,
                     sender: transaction.FromAddress,
                     amount: transaction.Amount,
-                    confirmations: transaction.Confirmations
+                    confirmations: transaction.Confirmations,
+                    price_usd: this.client.getETHUSDPrice()
                 });
             } else {
                 await currentTransactions.update({

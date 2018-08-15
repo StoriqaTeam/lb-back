@@ -1,7 +1,9 @@
 const User = require('../models').User;
 const Wallet = require('../models').Wallet;
+const Transaction = require('../models').Transaction;
 const walletGenerator = require('../helpers/wallet');
 const mailer = require("../helpers/mailer");
+const _ = require('lodash');
 
 module.exports = {
     list(req, res) {
@@ -58,8 +60,14 @@ module.exports = {
             })
             .catch(error => res.status(400).json({message: error}));
     },
-    profile(req, res) {
+    async profile(req, res) {
         // console.log("user", req.user);
+        const wallets = await Wallet.findAll({where: {user_id: req.user.id}});
+        const walletsId = new Array();
+        for(const wallet of wallets) {
+            walletsId[wallet.id] = wallet.id;
+        }
+        const transactions = await Transaction.findAll({where: {wallet_id: walletsId}});
         return User.findById(req.user.id)
             .then(user => {
                 if (!user) {
@@ -67,9 +75,7 @@ module.exports = {
                         message: 'User Not Found',
                     });
                 }
-                // let address = walletGenerator.generateAddress().then(address => console.log(address));
-                // console.log("address", address);
-                return res.status(200).json(user);
+                return res.status(200).json({user, wallets, transactions});
             })
             .catch(error => res.status(400).json({message: error}));
     },

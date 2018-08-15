@@ -21,4 +21,14 @@ export class Anypaycoins {
         }
         return transactions;
     }
+
+    async getBTCUSDPrice() {
+        const response = await axios.get('https://api.coinmarketcap.com/v2/ticker/1/');
+        return response.data.data.quotes.USD.price;
+    }
+
+    async getETHUSDPrice() {
+        const response = await axios.get('https://api.coinmarketcap.com/v2/ticker/1027/');
+        return console.log(response.data.data.quotes.USD.price);
+    }
 }
