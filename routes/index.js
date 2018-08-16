@@ -5,6 +5,7 @@ const usersController = require('../controllers').users;
 const authController = require('../controllers').auth;
 const messageController = require('../controllers').messages;
 const walletController = require('../controllers').wallets;
+const mainController = require('../controllers').main;
 
 const auth = require('../middleware/auth');
 
@@ -37,7 +38,9 @@ module.exports = (app) => {
 
     app.get(baseUrl + '/transactions', walletController.getTransactions);
     app.get(baseUrl + '/wallets', walletController.list);
-    app.post(baseUrl + '/transactions', walletController.getTransactions);
+    // app.post(baseUrl + '/transactions', walletController.getTransactions);
+
+    app.get(baseUrl + '/price', mainController.price);
 
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',
