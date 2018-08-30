@@ -1,20 +1,13 @@
 import {Watcher} from "./Watcher";
-import {logger} from "../../logger";
-import {Wallet, Transaction, Balance} from "../../models";
+import {Wallet, Transaction, Balance, BalanceChange} from "../../models";
 import {Decimal} from 'decimal.js';
-const _ = require('lodash');
 
-// import {MINUTE} from "../date-utils";
-// import {DepositUtils} from "./utils/DepositUtils";
-// 'use strict';
-// const Watcher = require('./Watcher');
-// const logger = require('../../logger');
-// const {Wallet, Transaction, Balance} = require('../../models');
+const _ = require('lodash');
 
 export class DepositWatcher extends Watcher {
 
     client;
-    depositUtils;
+    // depositUtils;
     logger;
 
     constructor(client) {
@@ -28,10 +21,6 @@ export class DepositWatcher extends Watcher {
 
     async run() {
         const transactions = await this.client.transactions();
-        // const wallet = await Wallet.findOne({where: {id: 2}});
-        // wallet.address = '0x8eb1443403038c591fc0d0eb5c307914cef17240';
-        // wallet.save();
-        // console.log(transactions);
         if (transactions) this.processTransactions(transactions);
     }
 
@@ -39,26 +28,19 @@ export class DepositWatcher extends Watcher {
 
         for (const transaction of transactions) {
             let wallet = await Wallet.findOne({where: {address: transaction.Address}});
-            // console.log('add',transaction.Address);
-            // console.log('wall',wallet);
-            if (!wallet) {
-                wallet = {id:0};
-            }
-                // const balance = new Decimal(wallet.balance?wallet.balance:0);
-                // console.log("w+", balance.plus(new Decimal(transaction.Amount)).toNumber());
+
+            if (!wallet) wallet = {id: 0};
 
             const currentTransactions = await Transaction.findOne({
-                where: {tx_hash: transaction.Txid}
+                where: {
+                    tx_hash: transaction.Txid,
+                    confirmations: {[Op.lt]: 20}
+                },
             });
 
-            //console.log("current", currentTransactions);
             if (!currentTransactions) {
                 if (transaction.Status == 'done' && transaction.Confirmations > 12 && wallet.id > 0) {
-                    this.logger.info(`Deposit balance update #${wallet.address}`);
-                    const balance = new Decimal(wallet.balance?wallet.balance:0);
-                    wallet.balance = balance.plus(new Decimal(transaction.Amount)).toNumber();
-                    wallet.is_confirmed = true;
-                    wallet.save();
+                    await this.balanceUpdate(transaction, wallet);
                 }
                 await Transaction.create({
                     wallet_id: wallet.id,
@@ -68,18 +50,39 @@ export class DepositWatcher extends Watcher {
                     confirmations: transaction.Confirmations,
                     price_usd: this.client.getETHUSDPrice()
                 });
+                this.logger.info(`Transaction create amount: ${transaction.Amount}, confirmations: ${transaction.Confirmations}`);
             } else {
                 await currentTransactions.update({
-                    wallet_id: wallet.id,
-                    tx_hash: transaction.Txid,
-                    sender: transaction.FromAddress,
-                    amount: transaction.Amount,
                     confirmations: transaction.Confirmations
                 });
+                this.logger.info(`Transaction #${currentTransactions.id} update confirmations: ${transaction.Confirmations}`);
             }
             // console.log(newTransaction);
 
         }
+    }
+
+    async balanceUpdate(transaction, wallet) {
+
+        const balance = await Balance.findOne({where: {user_id: wallet.user_id}});
+        const currentBalance = new Decimal(balance.amount ? balance.amount : 0);
+        const newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+
+        if (!balance) {
+            Balance.create({
+                user_id: user_id,
+                currency: transaction.Currency,
+                wallet_id: wallet.id,
+                wallet_address: wallet.address,
+                amount: newBalance
+            });
+        } else {
+            balance.update({
+                amount: newBalance
+            });
+        }
+
+        this.logger.info(`Deposit balance update ${currentBalance} to ${newBalance} #${balance.address}`);
     }
 
 }
