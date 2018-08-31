@@ -59,6 +59,9 @@
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.0.0",
     "speakeasy": "^2.0.0",
+    "swagger-jsdoc": "^3.0.2",
+    "swagger-ui": "^3.18.2",
+    "swagger-ui-dist": "^3.18.2",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",
     "webpack-hot-middleware": "^2.22.2"

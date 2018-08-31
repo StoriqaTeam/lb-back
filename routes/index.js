@@ -14,6 +14,21 @@ module.exports = (app) => {
         message: 'Welcome to the API v1.0!',
     }));
 
+    /**
+     * @swagger
+     * /api/v1/signin:
+     *   post:
+     *     tags:
+     *       - User
+     *     description: Login user
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Token and User
+     *         schema:
+     *           $ref: '#/definitions/User'
+     */
     app.post(baseUrl + '/signin', authController.signin);
     app.post(baseUrl + '/signup', authController.signup);
     app.post(baseUrl + '/user/activate', authController.activate);

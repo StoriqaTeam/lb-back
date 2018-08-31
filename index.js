@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const config = require('config');
-const passport = require("passport");
-const session = require('express-session');
+// const passport = require("passport");
+// const session = require('express-session');
 
 
 if (!config.get('jwtPrivateKey')) {
@@ -33,5 +33,5 @@ app.use((req, res, next) => {
 
     next();
 });
-
+require('./swagger')(app);
 require('./routes')(app);
