@@ -8,6 +8,14 @@ module.exports = {
         const wallets = await Wallet.all();
         return res.status(200).json(wallets);
     },
+    async add(req, res) {
+        const wallet = await Wallet.create({
+            user_id: req.user.id,
+            currency: req.body.currency ? req.body.currency : 'eth',
+            address: req.body.address
+        });
+        return res.status(200).json(wallet);
+    },
     async getTransactions(req, res) {
         const response = await axios.get(config.get('anypaycoins.url')+'/tx/', {
             headers: {'Authorization': config.get('anypaycoins.key')}
