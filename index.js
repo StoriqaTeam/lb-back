@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const config = require('config');
 // const passport = require("passport");
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.disable('x-powered-by');
 app.listen(process.env.PORT || 3000);
-
+app.use(express.static(path.join(__dirname, 'public')));
 // app.use(session({ secret: 'lblb' }));
 // app.use(passport.initialize());
 
