@@ -2,18 +2,18 @@
   "base_url": "/api/v1",
   "back_host": "http://localhost:3022/",
   "front_host": "http://localhost/",
-  "2fa_name": "lb",
-  "jwtPrivateKey": "lb-key",
-  "coinpayments": {
-    "merchant_id": "3c9b1ba13753a91b78f0428803410dc3",
-    "public_key": "66daee661f062a17810c7ab9190e1ee99d9a81777a376d6055588ccd657e203f",
-    "private_key": "3fDcd6d738baAd51c10CbB9374D345970128872BC367111d22F91945689a3b77",
-    "ipn_secret": "9mh5tqnVqr6y86VN2YunZTupvKG6Pv3m",
-    "ipn_url": ""
+  "2fa_name": "",
+  "jwtPrivateKey": "",
+  "anypaycoins": {
+      "key": "",
+      "url": ""
   },
   "mailer": {
-    "password": "Ugol115115",
-    "from": "coffee3shop@gmail.com"
+    "password": "",
+    "from": ""
+  },
+  "logger": {
+    "name": "lb-back",
+    "path": ""
   }
-
 }

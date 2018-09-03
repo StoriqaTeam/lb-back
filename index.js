@@ -1,9 +1,10 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const config = require('config');
-const passport = require("passport");
-const session = require('express-session');
+// const passport = require("passport");
+// const session = require('express-session');
 
 
 if (!config.get('jwtPrivateKey')) {
@@ -15,14 +16,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.disable('x-powered-by');
 app.listen(process.env.PORT || 3000);
-
+app.use(express.static(path.join(__dirname, 'public')));
 // app.use(session({ secret: 'lblb' }));
 // app.use(passport.initialize());
 
 console.log(`App listening on port ${process.env.PORT || 3000}`);
 
 app.use((req, res, next) => {
-	console.log(req.headers.origin)
+	// console.log(req.headers.origin)
     let allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://lb-front.stq.cloud', 'https://lb-front.stq.cloud'];
     let origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 
     next();
 });
+<<<<<<< HEAD
 
 app.use((req, res, next) => {
 	let key = req.headers['X-App-Key'];
@@ -42,10 +44,7 @@ app.use((req, res, next) => {
 	next()
 });
 
+=======
+require('./swagger')(app);
+>>>>>>> eb5efd9f2dbab77b54813c45c648ba9a60fdaca7
 require('./routes')(app);
-
-
-app.get('*', 
-  (req, res) => res.status(404).json({status: false})
-)
-

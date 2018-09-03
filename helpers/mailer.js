@@ -1,16 +1,5 @@
 const config = require("config");
-const mailer = require('nodemailer');
-
-if (!config.get('mailer.password') && !config.get('mailer.from')) {
-    console.log('Please set mailer from and password');
-}
-let transporter = mailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: config.get('mailer.from'),
-        pass: config.get('mailer.password')
-    }
-});
+const sender = require("./sender");
 
 module.exports = {
     sendActivation(email, code) {
@@ -24,14 +13,21 @@ module.exports = {
         };
         // console.log("data", data);
 
-        transporter.sendMail(data, (error, info) =>{
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-            return !!error ? false : true
-        });
+        sender.sendTheMessage(data);
+
         return true
+    },
+
+    sendRef(email, code) {
+        let link = config.get('front_host') + '?ref='+code;
+        let data = {
+            from: "LuckyBlock <"+config.get('mailer.from')+">",
+            to: email,
+            subject: `Привет! Зайди по ссылке и получи бонус!`,
+            text: "Привет! Зайди по ссылке и получи бонус! " + link,
+            html: "<h3>Привет!</h3><p>Зайди по ссылке и получи бонус! </p><p>"+link+"</p>"
+        };
+        return sender.sendTheMessage(data);
     }
 };
+

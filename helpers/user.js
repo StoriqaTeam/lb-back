@@ -12,21 +12,22 @@ module.exports = {
         user.password = bcrypt.hash(user.password, salt);
         user.ref_code = crypto.createHash('md5').update(data.email).digest('hex');
 
-        if (data.provider_type!==undefined) {
+        if (data.provider_type !== undefined) {
             user.provider_type = provider_type;
         }
-        if (data.google2fa_secret!==undefined) {
+        if (data.google2fa_secret !== undefined) {
             user.google2fa_secret = google2fa_secret;
         }
-        if (data.ref!==undefined) {
+        if (data.ref !== undefined) {
             let refUser = User.findOne({where: {ref_code: data.ref}});
-            if (refUser!==undefined) user.ref_id = refUser.id;
+            if (refUser !== undefined) user.ref_id = refUser.id;
         }
 
         user.save();
         return user;
     },
     getUserInfoBySocialProvider(provider, profile) {
+<<<<<<< HEAD
         switch (provider){
            case 'google':  
               return {
@@ -42,12 +43,35 @@ module.exports = {
                 email: profile.email ? profile.email.toLowerCase() : '',
                 name: profile.first_name + ' ' + profile.lastName
               }
+=======
+        console.log("prof", profile);
+        console.log("provider", provider);
+
+        switch (provider) {
+            case 'google':
+                return {
+                    email: profile.emails[0].value ? profile.emails[0].value : profile.id,
+                    name: profile.name.givenName ? profile.name.givenName : "" + ' ' + profile.name.familyName ? profile.name.familyName : "",
+                    avatar: profile.image.url ? profile.image.url : ''
+                };
+            case 'twitter':
+                return {
+                    email: profile.username ? profile.username : ""
+                };
+            case 'facebook':
+                return {
+                    email: profile.email ? profile.email : profile.id,
+                    name: profile.first_name ? profile.first_name : "" + ' ' + profile.lastName ? profile.lastName : '',
+                    avatar: profile.picture.data.url ? profile.picture.data.url : ""
+                };
+>>>>>>> eb5efd9f2dbab77b54813c45c648ba9a60fdaca7
             case 'telegram':
             default:
-              return { 
-                email: profile.username,
-                name: profile.first_name + ' ' + profile.last_name
-            }
+                return {
+                    email: profile.username,
+                    name: profile.first_name ? profile.first_name : "" + ' ' + profile.last_name ? profile.last_name : "",
+                    avatar: profile.photo_url ? profile.photo_url : ''
+                }
 
         }
     }
