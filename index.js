@@ -34,6 +34,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+	let key = req.headers['X-App-Key'];
+	if (key == 'lucky'){
+        	res.setHeader('Access-Control-Allow-Origin', req.headers.origin);		
+	}
+	next()
+});
+
 require('./routes')(app);
 
 

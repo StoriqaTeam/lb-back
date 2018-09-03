@@ -30,7 +30,7 @@ module.exports = {
         switch (provider){
            case 'google':  
               return {
-               email: profile.emails[0].value,
+               email: profile.email || profile.emails[0].value,
                name: profile.name.givenName + ' ' + profile.name.familyName
             }
             case 'twitter':
