@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 
     next();
 });
-<<<<<<< HEAD
+
 
 app.use((req, res, next) => {
 	let key = req.headers['X-App-Key'];
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 	next()
 });
 
-=======
+
 require('./swagger')(app);
->>>>>>> eb5efd9f2dbab77b54813c45c648ba9a60fdaca7
+
 require('./routes')(app);
