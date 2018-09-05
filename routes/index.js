@@ -6,8 +6,10 @@ const authController = require('../controllers').auth;
 const messageController = require('../controllers').messages;
 const walletController = require('../controllers').wallets;
 const mainController = require('../controllers').main;
+const balanceController = require('../controllers').balance;
 
 const auth = require('../middleware/auth');
+const twofa = require('../middleware/2fa');
 
 module.exports = (app) => {
     app.get(baseUrl + '/', (req, res) => res.status(200).send({
@@ -519,6 +521,31 @@ module.exports = (app) => {
 
     /**
      * @swagger
+     * /api/v1/wallet/add:
+     *   post:
+     *     tags:
+     *       - Balance
+     *     description: Current user balance
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: Balance
+     *         schema:
+     *            $ref: '#/definitions/Balance'
+     */
+    app.get(baseUrl + '/balance', auth, balanceController.index );
+    app.post(baseUrl + '/balance/withdraw', twofa, balanceController.withdraw );
+
+
+    /**
+     * @swagger
      * /api/v1/price:
      *   get:
      *     tags:
@@ -602,6 +629,19 @@ module.exports = (app) => {
      *          is_confirmed:
      *              type: boolean
      *          balance:
+     *              type: number
+     *              format: double
+     *  Balance:
+     *      properties:
+     *          user_id:
+     *              type: integer
+     *          currency:
+     *              type: string
+     *          wallet_id:
+     *              type: integer
+     *          wallet_address:
+     *              type: string
+     *          amount:
      *              type: number
      *              format: double
      *  Transactions:
