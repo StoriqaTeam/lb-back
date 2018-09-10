@@ -12,7 +12,8 @@ module.exports = {
         const wallet = await Wallet.create({
             user_id: req.user.id,
             currency: req.body.currency ? req.body.currency : 'eth',
-            address: req.body.address
+            address: req.body.address,
+            wallet_type: 'user'
         });
         return res.status(200).json(wallet);
     },
