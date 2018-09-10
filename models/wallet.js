@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         currency: DataTypes.STRING,
         address: DataTypes.STRING,
-        // lasttx: DataTypes.STRING,
+        wallet_type: DataTypes.STRING,
         is_active: DataTypes.BOOLEAN,
         is_confirmed: DataTypes.BOOLEAN,
         balance: {

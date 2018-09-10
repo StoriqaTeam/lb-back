@@ -151,6 +151,12 @@ module.exports = (app) => {
      *     description: Two factor authentication
      *     produces:
      *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
      *     responses:
      *       200:
      *         description: Return 2fa secret
@@ -161,11 +167,8 @@ module.exports = (app) => {
      *          image:
      *              type: string
      *              description: QR Code base64
-     *          token:
-     *              type: string
-     *              description: Secret token
      */
-    app.get(baseUrl + '/2fa', authController.google2fa);
+    app.get(baseUrl + '/2fa', auth, authController.google2fa);
     /**
      * @swagger
      * /api/v1/2fa:
@@ -198,7 +201,7 @@ module.exports = (app) => {
      *       400:
      *         description: token not equal
      */
-    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
+    app.post(baseUrl + '/2fa',  authController.google2fa_enable);
 
     /**
      * @swagger
@@ -516,13 +519,13 @@ module.exports = (app) => {
      *         schema:
      *            $ref: '#/definitions/Wallet'
      */
-    app.post(baseUrl + '/wallet/add', walletController.add);
+    app.post(baseUrl + '/wallet/add', [auth, twofa], walletController.add);
     // app.post(baseUrl + '/transactions', walletController.getTransactions);
 
     /**
      * @swagger
-     * /api/v1/wallet/add:
-     *   post:
+     * /api/v1/balance:
+     *   get:
      *     tags:
      *       - Balance
      *     description: Current user balance
@@ -541,7 +544,38 @@ module.exports = (app) => {
      *            $ref: '#/definitions/Balance'
      */
     app.get(baseUrl + '/balance', auth, balanceController.index );
-    app.post(baseUrl + '/balance/withdraw', twofa, balanceController.withdraw );
+    /**
+     * @swagger
+     * /api/v1/balance/withdraw:
+     *   get:
+     *     tags:
+     *       - Balance
+     *     description: Current user balance
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *        - name: amount
+     *          description: Amount
+     *          in: body
+     *          required: true
+     *          type: string
+     *        - name: address
+     *          description: Wallet Address
+     *          in: body
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: Balance
+     *         schema:
+     *            $ref: '#/definitions/Balance'
+     */
+    app.post(baseUrl + '/balance/withdraw', [auth, twofa], balanceController.withdraw );
 
 
     /**
@@ -623,6 +657,8 @@ module.exports = (app) => {
      *          currency:
      *              type: string
      *          address:
+     *              type: string
+     *          wallet_type:
      *              type: string
      *          is_active:
      *              type: boolean

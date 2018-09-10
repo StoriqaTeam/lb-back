@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         ref_id: DataTypes.INTEGER,
         ref_code: DataTypes.STRING,
         google2fa_secret: DataTypes.STRING,
+        provider_id: DataTypes.STRING,
         provider_type: DataTypes.STRING,
         kyc_applicant_id: DataTypes.STRING,
         kyc_status: DataTypes.INTEGER
