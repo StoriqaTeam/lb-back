@@ -201,7 +201,7 @@ module.exports = (app) => {
      *       400:
      *         description: token not equal
      */
-    app.post(baseUrl + '/2fa',  authController.google2fa_enable);
+    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
 
     /**
      * @swagger
