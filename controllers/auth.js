@@ -10,6 +10,9 @@ const mailer = require("../helpers/mailer");
 const userHelper = require('../helpers/user');
 const request = require('request');
 const socialConfig = require('../config/social');
+const authenticator = require('otplib/authenticator');
+
+authenticator.options = { crypto };
 
 module.exports = {
     async signin(req, res) {
@@ -136,34 +139,32 @@ module.exports = {
     },
 
     async google2fa(req, res) {
-        let secret = speakeasy.generateSecret({length: 8, name: config.get('2fa_name')});
-        let token = speakeasy.totp({
-            secret: secret.base32,
-            encoding: 'base32'
-        });
-        QRCode.toDataURL(secret.otpauth_url)
+        let secret = authenticator.generateSecret();
+        // let secret = speakeasy.generateSecret({length: 8, name: config.get('2fa_name')});
+        // let token = speakeasy.totp({
+        //     secret: secret.base32,
+        //     encoding: 'base32'
+        // });
+        const otpauth = authenticator.keyuri(req.user.email, config.get('2fa_name'), secret);
+
+        QRCode.toDataURL(otpauth)
             .then(image_data => {
                 res.status(200).send({
-                    secret: secret.base32,
+                    secret: secret,
                     image: image_data,
-                    token: token
                 });
             });
     },
     async google2fa_enable(req, res) {
-        let user = await User.findOne({where: {email: req.user.email}});
-        let isVerify = speakeasy.totp.verify({
-            secret: req.body.secret,
-            encoding: 'base32',
-            token: req.body.token
-        });
-        if (isVerify) {
-            user.google2fa_secret = req.body.secret;
-            await user.save();
-            res.status(200).send({message: '2fa enable'});
-        } else {
-            res.status(400).send({message: 'token not equal'})
+        let user = await User.findOne({where: {id: req.user.id}});
+
+        if (!authenticator.check(req.body.token, req.body.secret)) {
+            return res.status(400).send({message: 'token not equal'})
         }
+        // let isVerify = speakeasy.totp.verify({secret: req.body.secret, encoding: 'base32', token: req.body.token});
+        user.google2fa_secret = req.body.secret;
+        await user.save();
+        return res.status(200).send({message: '2fa enable'});
     }
 
 };

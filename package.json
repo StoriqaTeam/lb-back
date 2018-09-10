@@ -47,6 +47,7 @@
     "lodash": "^4.17.10",
     "nodemailer": "^4.6.7",
     "nodemon": "^1.18.3",
+    "otplib": "^10.0.1",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",

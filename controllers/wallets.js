@@ -10,9 +10,10 @@ module.exports = {
     },
     async add(req, res) {
         const wallet = await Wallet.create({
-            user_id: req.user.id,
+            user_id: (req.user) ? req.user.id : req.body.user_id,
             currency: req.body.currency ? req.body.currency : 'eth',
-            address: req.body.address
+            address: req.body.address,
+            wallet_type: 'user'
         });
         return res.status(200).json(wallet);
     },

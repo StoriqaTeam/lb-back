@@ -6,8 +6,10 @@ const authController = require('../controllers').auth;
 const messageController = require('../controllers').messages;
 const walletController = require('../controllers').wallets;
 const mainController = require('../controllers').main;
+const balanceController = require('../controllers').balance;
 
 const auth = require('../middleware/auth');
+const twofa = require('../middleware/2fa');
 
 module.exports = (app) => {
     app.get(baseUrl + '/', (req, res) => res.status(200).send({
@@ -149,6 +151,12 @@ module.exports = (app) => {
      *     description: Two factor authentication
      *     produces:
      *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
      *     responses:
      *       200:
      *         description: Return 2fa secret
@@ -159,11 +167,8 @@ module.exports = (app) => {
      *          image:
      *              type: string
      *              description: QR Code base64
-     *          token:
-     *              type: string
-     *              description: Secret token
      */
-    app.get(baseUrl + '/2fa', authController.google2fa);
+    app.get(baseUrl + '/2fa', auth, authController.google2fa);
     /**
      * @swagger
      * /api/v1/2fa:
@@ -196,7 +201,7 @@ module.exports = (app) => {
      *       400:
      *         description: token not equal
      */
-    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
+    app.post(baseUrl + '/2fa',  authController.google2fa_enable);
 
     /**
      * @swagger
@@ -514,8 +519,64 @@ module.exports = (app) => {
      *         schema:
      *            $ref: '#/definitions/Wallet'
      */
-    app.post(baseUrl + '/wallet/add', walletController.add);
+    app.post(baseUrl + '/wallet/add', [auth, twofa], walletController.add);
     // app.post(baseUrl + '/transactions', walletController.getTransactions);
+
+    /**
+     * @swagger
+     * /api/v1/balance:
+     *   get:
+     *     tags:
+     *       - Balance
+     *     description: Current user balance
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: Balance
+     *         schema:
+     *            $ref: '#/definitions/Balance'
+     */
+    app.get(baseUrl + '/balance', auth, balanceController.index );
+    /**
+     * @swagger
+     * /api/v1/balance/withdraw:
+     *   get:
+     *     tags:
+     *       - Balance
+     *     description: Current user balance
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *        - name: amount
+     *          description: Amount
+     *          in: body
+     *          required: true
+     *          type: string
+     *        - name: address
+     *          description: Wallet Address
+     *          in: body
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: Balance
+     *         schema:
+     *            $ref: '#/definitions/Balance'
+     */
+    app.post(baseUrl + '/balance/withdraw', [auth, twofa], balanceController.withdraw );
+
 
     /**
      * @swagger
@@ -597,11 +658,26 @@ module.exports = (app) => {
      *              type: string
      *          address:
      *              type: string
+     *          wallet_type:
+     *              type: string
      *          is_active:
      *              type: boolean
      *          is_confirmed:
      *              type: boolean
      *          balance:
+     *              type: number
+     *              format: double
+     *  Balance:
+     *      properties:
+     *          user_id:
+     *              type: integer
+     *          currency:
+     *              type: string
+     *          wallet_id:
+     *              type: integer
+     *          wallet_address:
+     *              type: string
+     *          amount:
      *              type: number
      *              format: double
      *  Transactions:
