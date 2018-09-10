@@ -84,6 +84,7 @@ module.exports = {
         }
         user.ref_code = !user.ref_code ? crypto.createHash('md5').update(user.email).digest('hex') : user.ref_code;
         user.provider_type = req.body.provider;
+        user.provider_id = req.body.profile.id ? req.body.profile.id : data.email;
         await user.save();
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
