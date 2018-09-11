@@ -13,6 +13,6 @@ module.exports = async function (req, res, next) {
     next();
   }
   catch (ex) {
-    res.status(400).json({error: 'Invalid token.'});
+    res.status(400).json({error: 'Access denied. Invalid auth token.'});
   }
 };

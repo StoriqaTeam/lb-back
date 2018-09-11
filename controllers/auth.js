@@ -186,9 +186,10 @@ module.exports = {
     },
 
     async disable2fa(req, res) {
-        let user = await User.findOne({where: {id: req.body.user_id}});
-        user.google2fa_secret = '';
-        await user.save();
+        await User.update(
+            {google2fa_secret: ''},
+            {where: {id: req.body.user_id}}
+            );
 
         return res.status(200).send({message: '2fa disabled'});
     }
