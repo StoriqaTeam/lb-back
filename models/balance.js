@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         currency: DataTypes.STRING,
         wallet_id: DataTypes.INTEGER,
         wallet_address: DataTypes.STRING,
-        amount: DataTypes.FLOAT,
+            amount: DataTypes.FLOAT,
         transaction_id: DataTypes.INTEGER
     }, {});
     Balance.associate = function (models) {

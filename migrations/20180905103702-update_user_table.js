@@ -2,19 +2,23 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.addColumn(
+        return [queryInterface.addColumn(
             'Users',
             'kyc_applicant_id',
             {
                 type: Sequelize.STRING,
                 allowNull: true
-            },
-            'kyc_status',
-            {
-                type: Sequelize.INTEGER,
-                allowNull: true
             }
-        );
+        ),
+            queryInterface.addColumn(
+                'Users',
+                'kyc_status',
+                {
+                    type: Sequelize.INTEGER,
+                    allowNull: true
+                }
+            )
+        ];
     },
 
     down: (queryInterface, Sequelize) => {

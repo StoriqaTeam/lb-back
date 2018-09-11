@@ -201,7 +201,7 @@ module.exports = (app) => {
      *       400:
      *         description: token not equal
      */
-    app.post(baseUrl + '/2fa',  authController.google2fa_enable);
+    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
 
     /**
      * @swagger
@@ -577,7 +577,30 @@ module.exports = (app) => {
      */
     app.post(baseUrl + '/balance/withdraw', [auth, twofa], balanceController.withdraw );
 
-
+    /**
+     * @swagger
+     * /api/v1/accessToken:
+     *   get:
+     *     tags:
+     *       - KYC
+     *     description: Get access token
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: Return Token
+     *         properties:
+     *          token:
+     *              type: string
+     *              description: Token
+     */
+    app.get(baseUrl + '/accessToken', auth, mainController.accessToken);
     /**
      * @swagger
      * /api/v1/price:
