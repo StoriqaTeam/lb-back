@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
         provider_id: DataTypes.STRING,
         provider_type: DataTypes.STRING,
         kyc_applicant_id: DataTypes.STRING,
-        kyc_status: DataTypes.INTEGER
+        kyc_status: DataTypes.INTEGER,
+        kyc_comment: DataTypes.STRING
     }, {});
     User.associate = (models) => {
         // associations can be defined here

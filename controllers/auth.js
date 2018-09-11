@@ -166,8 +166,32 @@ module.exports = {
         user.google2fa_secret = req.body.secret;
         await user.save();
         return res.status(200).send({message: '2fa enable'});
-    }
+    },
 
+    async check2fa(req, res) {
+        let user = await User.findOne({where: {id: req.body.user_id}});
+        let message;
+        console.log("usersecret", user.google2fa_secret);
+        console.log("token", req.body.token);
+
+        if (authenticator.check(req.body.token, user.google2fa_secret)) {
+            console.log("checksuccess");
+            message = 'checksuccess';
+        } else {
+            console.log("checkfail");
+            message = 'checkfail';
+        }
+
+        return res.status(200).send({message});
+    },
+
+    async disable2fa(req, res) {
+        let user = await User.findOne({where: {id: req.body.user_id}});
+        user.google2fa_secret = '';
+        await user.save();
+
+        return res.status(200).send({message: '2fa disabled'});
+    }
 };
 
 function validate(req) {
