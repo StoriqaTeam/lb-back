@@ -601,6 +601,8 @@ module.exports = (app) => {
      *              description: Token
      */
     app.get(baseUrl + '/accessToken', auth, mainController.accessToken);
+    app.post(baseUrl + '/check2fa', authController.check2fa);
+    app.post(baseUrl + '/disable2fa', authController.disable2fa);
     /**
      * @swagger
      * /api/v1/price:
