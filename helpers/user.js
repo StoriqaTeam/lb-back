@@ -32,12 +32,21 @@ module.exports = {
 
         switch (provider) {
             case 'google':
-                return {
-                    email: profile.email || '',
-                    name: profile.name || '',
-                    avatar: profile.picture || '',
-                    id: profile.id
-                };
+                if (profile.kind !== undefined) {
+                    return {
+                        email: profile.emails[0].value ? profile.emails[0].value : '',
+                        name: profile.name.givenName ? profile.name.givenName : "" + ' ' + profile.name.familyName ? profile.name.familyName : "",
+                        avatar: profile.image.url ? profile.image.url : '',
+                        id: profile.id
+                    };
+                } else {
+                    return {
+                        email: profile.email || '',
+                        name: profile.name || "",
+                        avatar: profile.picture || profile.image.url || '',
+                        id: profile.id
+                    };
+                }
             case 'twitter':
                 return {
                     email: "",
