@@ -27,28 +27,36 @@ module.exports = {
         return user;
     },
     getUserInfoBySocialProvider(provider, profile) {
-        switch (provider){
-           case 'google':  
-              return {
-               email: profile.email || profile.emails[0].value,
-               name: profile.name.givenName + ' ' + profile.name.familyName
-            }
-            case 'twitter':
-              return {
-                email: profile.username
-              }
-            case 'facebook': 
-              return {
-                email: profile.email ? profile.email.toLowerCase() : '',
-                name: profile.first_name + ' ' + profile.lastName
-              }
+        console.log("prof", profile);
+        console.log("provider", provider);
 
+        switch (provider) {
+            case 'google':
+                return {
+                    email: profile.emails[0].value ? profile.emails[0].value : '',
+                    name: profile.name.givenName ? profile.name.givenName : "" + ' ' + profile.name.familyName ? profile.name.familyName : "",
+                    avatar: profile.image.url ? profile.image.url : '',
+                    id: profile.id
+                };
+            case 'twitter':
+                return {
+                    email: "",
+                    id: profile.username
+                };
+            case 'facebook':
+                return {
+                    email: profile.email ? profile.email : '',
+                    name: profile.first_name ? profile.first_name : "" + ' ' + profile.lastName ? profile.lastName : '',
+                    avatar: profile.picture.data.url ? profile.picture.data.url : "",
+                    id: profile.id
+                };
             case 'telegram':
             default:
                 return {
-                    email: profile.username,
+                    email: '',
                     name: profile.first_name ? profile.first_name : "" + ' ' + profile.last_name ? profile.last_name : "",
-                    avatar: profile.photo_url ? profile.photo_url : ''
+                    avatar: profile.photo_url ? profile.photo_url : '',
+                    id: profile.username
                 }
 
         }

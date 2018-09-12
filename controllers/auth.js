@@ -84,7 +84,7 @@ module.exports = {
         }
         user.ref_code = !user.ref_code ? crypto.createHash('md5').update(user.email).digest('hex') : user.ref_code;
         user.provider_type = req.body.provider;
-        user.provider_id = req.body.profile.id ? req.body.profile.id : data.email;
+        user.provider_id = data.id;
         await user.save();
 
         const token = user.generateAuthToken({id: user.id, email: user.email});
@@ -171,8 +171,9 @@ module.exports = {
     async check2fa(req, res) {
         let user = await User.findOne({where: {id: req.body.user_id}});
         let message;
+        const token = authenticator.generate(secret);
         console.log("usersecret", user.google2fa_secret);
-        console.log("token", req.body.token);
+        console.log("token", req.body.token, " = ", token);
 
         if (authenticator.check(req.body.token, user.google2fa_secret)) {
             console.log("checksuccess");
@@ -181,8 +182,10 @@ module.exports = {
             console.log("checkfail");
             message = 'checkfail';
         }
+        const timeUsed = authenticator.timeUsed(),
+            timeRemaining = authenticator.timeRemaining();
 
-        return res.status(200).send({message});
+        return res.status(200).send({message, token, timeUsed, timeRemaining});
     },
 
     async disable2fa(req, res) {
