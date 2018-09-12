@@ -1,0 +1,12 @@
+{
+  "base_url": "/api/v1",
+  "back_host": "https://lb-back.stq.cloud/",
+  "front_host": "https://lb-front.stq.cloud/",
+  "2fa_name": "luckyblock",
+  "jwtPrivateKey": "lb-stq-key",
+  "mailer": {
+    "password": "Ugol115115",
+    "from": "coffee3shop@gmail.com"
+  }
+
+}
