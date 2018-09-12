@@ -12,7 +12,7 @@ const request = require('request');
 const socialConfig = require('../config/social');
 const authenticator = require('otplib/authenticator');
 
-authenticator.options = { crypto };
+authenticator.options = { step: 40 };
 
 module.exports = {
     async signin(req, res) {
@@ -171,7 +171,8 @@ module.exports = {
     async check2fa(req, res) {
         let user = await User.findOne({where: {id: req.body.user_id}});
         let message;
-        if (!user.google2fa_secret) return res.status(200).send('not secret');
+        if (!user.google2fa_secret) return res.status(200).send('not secret ');
+        
         const token = authenticator.generate(user.google2fa_secret);
         console.log("usersecret", user.google2fa_secret);
         console.log("token", req.body.token, " = ", token);
