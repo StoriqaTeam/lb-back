@@ -1,6 +1,7 @@
-const config = require('config');
-const User = require('../models').User;
-const speakeasy = require('speakeasy');
+const crypto = require('crypto');
+const authenticator = require('otplib/authenticator');
+
+authenticator.options = { crypto };
 
 module.exports = async function (req, res, next) {
 
