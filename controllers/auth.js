@@ -141,11 +141,6 @@ module.exports = {
 
     async google2fa(req, res) {
         let secret = authenticator.generateSecret();
-        // let secret = speakeasy.generateSecret({length: 8, name: config.get('2fa_name')});
-        // let token = speakeasy.totp({
-        //     secret: secret.base32,
-        //     encoding: 'base32'
-        // });
         const otpauth = authenticator.keyuri(req.user.email, config.get('2fa_name'), secret);
 
         QRCode.toDataURL(otpauth)
@@ -162,7 +157,6 @@ module.exports = {
         if (!authenticator.check(req.body.token, req.body.secret)) {
             return res.status(400).send({message: 'token not equal'})
         }
-        // let isVerify = speakeasy.totp.verify({secret: req.body.secret, encoding: 'base32', token: req.body.token});
         user.google2fa_secret = req.body.secret;
         await user.save();
         return res.status(200).send({message: '2fa enable'});
