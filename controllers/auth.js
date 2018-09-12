@@ -177,9 +177,13 @@ module.exports = {
         console.log("usersecret", user.google2fa_secret);
         console.log("token", req.body.token, " = ", token);
 
+
         if (authenticator.check(req.body.token, user.google2fa_secret)) {
             console.log("checksuccess");
             message = 'checksuccess';
+        } else if (authenticator.verify({ token: req.body.token, secret: user.google2fa_secret })) {
+            console.log("checksuccess2");
+            message = 'checksuccess2';
         } else {
             console.log("checkfail");
             message = 'checkfail';
