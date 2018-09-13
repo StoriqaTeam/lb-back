@@ -17,8 +17,6 @@ app.use(cookieParser());
 app.disable('x-powered-by');
 app.listen(process.env.PORT || 3000);
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(session({ secret: 'lblb' }));
-// app.use(passport.initialize());
 
 console.log(`App listening on port ${process.env.PORT || 3000}`);
 
@@ -32,18 +30,12 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', '*');
 
+    if (req.headers['X-App-Key'] == 'lucky'){
+        res.header('Access-Control-Allow-Origin', origin);
+    }
+
     next();
 });
-
-
-app.use((req, res, next) => {
-	let key = req.headers['X-App-Key'];
-	if (key == 'lucky'){
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-	}
-	next()
-});
-
 
 require('./swagger')(app);
 
