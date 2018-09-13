@@ -154,8 +154,8 @@ module.exports = {
     async google2fa_enable(req, res) {
         let user = await User.findOne({where: {id: req.user.id}});
 
-        console.log("token", req.body.token, req.body.twofatoken, "secret", req.body.secret);
-        if (!authenticator.check(req.body.twofatoken, req.body.secret)) {
+        console.log("token", req.body.token, "secret", req.body.secret);
+        if (!authenticator.check(req.body.token, req.body.secret)) {
             return res.status(400).send({message: 'token not equal'})
         }
         user.google2fa_secret = req.body.secret;
