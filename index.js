@@ -31,7 +31,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', '*');
 
     if (req.headers['X-App-Key'] == 'lucky'){
-        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Origin', origin);
     }
 
     next();
