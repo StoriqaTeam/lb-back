@@ -11,6 +11,7 @@ const userHelper = require('../helpers/user');
 const request = require('request');
 const socialConfig = require('../config/social');
 const authenticator = require('otplib/authenticator');
+var notp = require('notp');
 
 authenticator.options = { step: 40, crypto };
 
@@ -141,11 +142,8 @@ module.exports = {
 
     async google2fa(req, res) {
         let secret = await speakeasy.generateSecret();
-        // const otpauth = authenticator.keyuri(req.user.email, config.get('2fa_name'), secret);
-
         QRCode.toDataURL(secret.otpauth_url)
             .then(image_data => {
-                console.log(secret.base32)
                 res.status(200).send({
                     secret: secret.base32,
                     image: image_data,
@@ -153,36 +151,27 @@ module.exports = {
             });
     },
     async google2fa_enable(req, res) {
-        let user = await User.findOne({where: {id: req.user.id}});
+         let user = await User.findOne({where: {id: req.user.id}});
 
 
-        var token = await speakeasy.totp({
-            secret: req.secret,
-            encoding: 'base32',
-            time:300
+       let tokenRange = speakeasy.totp.verifyDelta({ 
+         secret: req.body.secret,   
+         encoding: 'base32',
+         token:req.body.token, 
+         window: 10000 
         });
+        console.log(tokenRange)
+ 
+        let token = tokenRange.delta <= 1620 && tokenRange.delta >= 1580
+ 
 
-        var verified = await speakeasy.totp.verify({
-            secret: req.secret,
-            encoding: 'base32',
-            token: token,
-            time: 300
-        });
-        // var verified = await speakeasy.totp.verify({
-        //   secret:    req.body.secret,
-        //   encoding:  'base32',
-        //   token:     req.body.token.toString()
-        // });
-        console.log('verified: ', "_",req.body.secret, req.body.token, verified)
-        /*
-        console.log("token", req.body.token, "secret", req.body.secret);
-        if (!authenticator.check(req.body.token, req.body.secret)) {
-            return res.status(400).send({message: 'token not equal'})
+        if (!token) {
+           return res.status(400).send({message: 'token not equal'})
         }
         user.google2fa_secret = req.body.secret;
         await user.save();
-        return res.status(200).send({message: '2fa enable'});
-        */
+        return res.status(200).send({message: req.body.secret});
+       /* */
     },
 
     async check2fa(req, res) {
