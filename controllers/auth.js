@@ -162,7 +162,7 @@ module.exports = {
         });
         console.log(tokenRange);
 
-        let token = tokenRange.delta <= 1620 && tokenRange.delta >= 1600;
+        let token = tokenRange.delta <= 1620 && tokenRange.delta >= 1400;
 
         if (!token) {
             return res.status(400).send({message: 'token not equal'})
