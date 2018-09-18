@@ -14,6 +14,9 @@ module.exports = {
       wallet_id: {
         type: Sequelize.INTEGER
       },
+      currency: {
+          type: Sequelize.STRING
+      },
       wallet_address: {
         type: Sequelize.STRING
       },
