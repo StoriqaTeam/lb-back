@@ -2,7 +2,7 @@ const crypto = require('crypto');
 // const authenticator = require('otplib/authenticator');
 const speakeasy = require('speakeasy');
 
-authenticator.options = {step: 40, crypto};
+// authenticator.options = {step: 40, crypto};
 
 module.exports = async function (req, res, next) {
 
