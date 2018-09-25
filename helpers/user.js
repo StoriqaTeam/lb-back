@@ -33,7 +33,7 @@ module.exports = {
         switch (provider) {
             case 'google':
                 return {
-                    email: profile.emails[0].value ? profile.emails[0].value : profile.id,
+                    email: profile.email || profile.emails[0].value ? profile.emails[0].value : profile.id,
                     name: profile.name.givenName ? profile.name.givenName : "" + ' ' + profile.name.familyName ? profile.name.familyName : "",
                     avatar: profile.image.url ? profile.image.url : ''
                 };
