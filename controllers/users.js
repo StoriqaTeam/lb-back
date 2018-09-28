@@ -29,7 +29,7 @@ module.exports = {
     },
     update(req, res) {
         return User
-            .findById(req.params.id)
+            .findById(req.user.id)
             .then(user => {
                 if (!user) {
                     return res.status(404).json({

@@ -11,8 +11,9 @@ const userHelper = require('../helpers/user');
 const request = require('request');
 const socialConfig = require('../config/social');
 const authenticator = require('otplib/authenticator');
+var notp = require('notp');
 
-authenticator.options = { step: 40, crypto };
+authenticator.options = {step: 40, crypto};
 
 module.exports = {
     async signin(req, res) {
@@ -117,13 +118,13 @@ module.exports = {
                 consumer_secret: socialConfig.twitterAuth.consumerSecret,
                 token: req.query.oauth_token
             },
-            form: { oauth_verifier: req.query.oauth_verifier }
+            form: {oauth_verifier: req.query.oauth_verifier}
         }, function (err, r, body) {
             if (body == 'Reverse auth credentials are invalid') {
-                return res.status(500).json({ message: body });
+                return res.status(500).json({message: body});
             }
             if (err) {
-                return res.status(500).json({ message: err.message });
+                return res.status(500).json({message: err.message});
             }
 
             const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
@@ -142,7 +143,7 @@ module.exports = {
         request.post({
             url: 'https://api.twitter.com/oauth/request_token',
             oauth: {
-                oauth_callback: config.get('front_host')+"twitter-callback",
+                oauth_callback: config.get('front_host') + "twitter-callback",
                 consumer_key: socialConfig.twitterAuth.consumerKey,
                 consumer_secret: socialConfig.twitterAuth.consumerSecret
             }
@@ -157,33 +158,51 @@ module.exports = {
     },
 
     async google2fa(req, res) {
-        let secret = authenticator.generateSecret();
-        const otpauth = authenticator.keyuri(req.user.email, config.get('2fa_name'), secret);
-
-        QRCode.toDataURL(otpauth)
+        let secretName = `${config.get('2fa_name')}(${req.user.email})`;
+        let secret = await speakeasy.generateSecret({name: secretName});
+        QRCode.toDataURL(secret.otpauth_url)
             .then(image_data => {
                 res.status(200).send({
-                    secret: secret,
+                    secret: secret.base32,
                     image: image_data,
                 });
             });
     },
     async google2fa_enable(req, res) {
-        let user = await User.findOne({where: {id: req.user.id}});
+        let user = await User.findById(req.user.id);
 
-        console.log("token", req.body.token, "secret", req.body.secret);
-        if (!authenticator.check(req.body.token, req.body.secret)) {
+        let tokenRange = speakeasy.totp.verifyDelta({
+            secret: req.body.secret,
+            encoding: 'base32',
+            token: req.body.token,
+            window: 10000
+        });
+        console.log(tokenRange);
+
+        let token = tokenRange.delta <= 1620 && tokenRange.delta >= 1400;
+
+        if (!token) {
             return res.status(400).send({message: 'token not equal'})
         }
         user.google2fa_secret = req.body.secret;
         await user.save();
-        return res.status(200).send({message: '2fa enable'});
+        return res.status(200).send({message: req.body.secret});
     },
 
     async check2fa(req, res) {
-        let user = await User.findOne({where: {id: req.body.user_id}});
+        let user = await User.findById(req.body.user_id);
         let message;
+        var verified = await speakeasy.totp.verify({
+            secret: user.google2fa_secret,
+            encoding: 'base32',
+            token: req.body.token
+        });
         if (!user.google2fa_secret) return res.status(200).send('not secret ');
+        console.log("usersecret", user.google2fa_secret);
+        console.log("token", req.body.token, " = ", token);
+
+        return res.status(200).send({token: req.body.token, secret, is_verified: verified});
+        /*
 
         const token = authenticator.generate(user.google2fa_secret);
         console.log("usersecret", user.google2fa_secret);
@@ -204,13 +223,14 @@ module.exports = {
             timeRemaining = authenticator.timeRemaining();
 
         return res.status(200).send({message, token, timeUsed, timeRemaining});
+        */
     },
 
     async disable2fa(req, res) {
         await User.update(
             {google2fa_secret: ''},
             {where: {id: req.body.user_id}}
-            );
+        );
 
         return res.status(200).send({message: '2fa disabled'});
     }

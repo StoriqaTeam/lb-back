@@ -7,6 +7,7 @@ const messageController = require('../controllers').messages;
 const walletController = require('../controllers').wallets;
 const mainController = require('../controllers').main;
 const balanceController = require('../controllers').balance;
+const betsController = require('../controllers').bets;
 
 const auth = require('../middleware/auth');
 const twofa = require('../middleware/2fa');
@@ -648,6 +649,76 @@ module.exports = (app) => {
      */
     app.get(baseUrl + '/price', mainController.price);
 
+    /**
+     * @swagger
+     * /api/v1/bets:
+     *   get:
+     *     tags:
+     *       - Bet
+     *     description: Bet list
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: x-auth-token
+     *         description: User Auth token
+     *         in: header
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Bet list
+     *         properties:
+     *          messages:
+     *              type: array
+     *              items:
+     *                  $ref: '#/definitions/Bet'
+     */
+    app.get(baseUrl + '/bets', auth, betsController.list);
+    /**
+     * @swagger
+     * /api/v1/bets/create:
+     *   post:
+     *     tags:
+     *       - Bet
+     *     description: Create bet
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: x-auth-token
+     *         description: User Auth token
+     *         in: header
+     *         required: true
+     *         type: string
+     *       - name: period
+     *         description: Time Period
+     *         in: body
+     *         required: true
+     *         type: integer
+     *       - name: amount
+     *         description: Amount
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: start_date
+     *         description: Start date
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: end_date
+     *         description: End date
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Bet Successfully created
+     *         schema:
+     *           $ref: '#/definitions/Bet'
+     *       404:
+     *          description: User Not Found
+     */
+    app.post(baseUrl + '/bets/create', auth, betsController.create);
+
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',
         status: false
@@ -744,5 +815,20 @@ module.exports = (app) => {
      *              format: double
      *          confirmations:
      *              type: integer
+     *  Bet:
+     *      properties:
+     *          user_id:
+     *              type: integer
+     *          period:
+     *              type: string
+     *          amount:
+     *              type: number
+     *              format: double
+     *          start_date:
+     *              type: string
+     *              format: date-time
+     *          end_date:
+     *              type: string
+     *              format: date-time
      */
 };
