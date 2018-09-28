@@ -87,6 +87,26 @@ module.exports = (app) => {
     app.post(baseUrl + '/signup', authController.signup);
     /**
      * @swagger
+     * /api/v1/send-activation:
+     *   get:
+     *     tags:
+     *       - User Auth
+     *     description: Send email for user activation
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     */
+    app.get(baseUrl + '/send-activation', auth, authController.sendActivation);
+    /**
+     * @swagger
      * /api/v1/user/activate:
      *   post:
      *     tags:
