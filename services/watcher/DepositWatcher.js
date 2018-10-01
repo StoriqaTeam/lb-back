@@ -1,6 +1,7 @@
 import {Watcher} from "./Watcher";
 import {Wallet, Transaction, Balance, BalanceChange} from "../../models";
 import {Decimal} from 'decimal.js';
+import {Op} from "sequelize";
 
 const _ = require('lodash');
 
