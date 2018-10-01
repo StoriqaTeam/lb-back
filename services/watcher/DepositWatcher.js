@@ -69,7 +69,7 @@ export class DepositWatcher extends Watcher {
         if (!balance) {
             const newBalance = (new Decimal(transaction.Amount)).toNumber();
             Balance.create({
-                user_id: user_id,
+                user_id: wallet.user_id,
                 currency: transaction.Currency,
                 wallet_id: wallet.id,
                 wallet_address: wallet.address,
