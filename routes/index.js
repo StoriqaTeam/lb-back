@@ -395,7 +395,7 @@ module.exports = (app) => {
      *       404:
      *         description: User Not Found
      */
-    app.post(baseUrl + '/user/deposit-address', usersController.getAddress);
+    app.post(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
     /**
      * @swagger
      * /api/v1/send_ref:

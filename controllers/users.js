@@ -80,7 +80,7 @@ module.exports = {
             .catch(error => res.status(400).json({message: error}));
     },
     async getAddress(req, res) {
-        let user_id = req.user ? req.user.id : req.body.user_id;
+        let user_id = req.user.id;
         let user = await User.findAll({where: {id: user_id}});
         if (!user_id || !user) {
             return res.status(400).json({message: 'User Not Found'});
