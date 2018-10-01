@@ -87,7 +87,7 @@ export class DepositWatcher extends Watcher {
             });
         }
 
-        this.logger.info(`Deposit balance update ${currentBalance.toNumber()} to ${newBalance} #${balance.address}`);
+        this.logger.info(`Deposit balance update ${currentBalance.toNumber()} to ${newBalance} #${wallet.address}`);
     }
 
 }
