@@ -391,9 +391,10 @@ module.exports = (app) => {
      *          type: string
      *     responses:
      *       200:
-     *         description: address
-     *       404:
-     *         description: User Not Found
+     *         schema:
+     *           $ref: '#/definitions/Wallet'
+     *       400:
+     *         description: Error
      */
     app.post(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
     /**
@@ -503,7 +504,7 @@ module.exports = (app) => {
      *       200:
      *         description: Wallets list
      *         properties:
-     *          messages:
+     *          wallets:
      *              type: array
      *              items:
      *                  $ref: '#/definitions/Wallet'
