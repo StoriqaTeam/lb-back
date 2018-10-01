@@ -60,6 +60,23 @@ module.exports = {
         res.header('x-auth-token', token).json(user);
     },
 
+    async sendActivation(req, res) {
+        try {
+            const user = req.user;
+            const salt = await bcrypt.genSalt(10);
+            const activationCode = crypto.createHash('md5').update(user.email + salt).digest('hex');
+
+            user.verification_code = activationCode;
+            await user.save();
+
+            await mailer.sendActivation(user.email, activationCode);
+
+            return res.status(200).send({message: 'OK'});
+        } catch (e) {
+            return res.status(400).json({message: e.response.data.description});
+        }
+    },
+
     async activate(req, res) {
         let user = await User.findOne({where: {verification_code: req.body.code}});
         if (!user) return res.status(400).json({error: 'Invalid activation code.'});

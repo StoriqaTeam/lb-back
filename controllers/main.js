@@ -48,6 +48,10 @@ module.exports = {
         } catch (e) {
             console.log("Kyc error:", e);
         }
-    }
+    },
+
+    async cloudCallback(req, res) {
+
+    },
 
 };
