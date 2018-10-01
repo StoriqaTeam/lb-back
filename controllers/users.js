@@ -27,24 +27,22 @@ module.exports = {
             })
             .catch(error => res.status(400).json({message: error}));
     },
-    update(req, res) {
-        return User
-            .findById(req.user.id)
-            .then(user => {
-                if (!user) {
-                    return res.status(404).json({
-                        message: 'User Not Found',
-                    });
-                }
-                return user
-                    .update({
-                        name: req.body.name || user.name,
-                        email: req.body.email || user.email
-                    })
-                    .then(() => res.status(200).json(user))
-                    .catch((error) => res.status(400).json({message: error}));
-            })
-            .catch((error) => res.status(400).json({message: error}));
+    async update(req, res) {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({
+                message: 'User Not Found',
+            });
+        }
+        const isExistEmail = await user.checkEmail(req.body.email);
+        if (req.body.email && isExistEmail) {
+            return res.status(400).json({message: `User with email ${req.body.email} already exist`});
+        }
+        await user.update({
+                name: req.body.name || user.name,
+                email: req.body.email || user.email
+        });
+        return res.status(200).json(user);
     },
     destroy(req, res) {
         return User

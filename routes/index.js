@@ -391,7 +391,7 @@ module.exports = (app) => {
      *          type: string
      *     responses:
      *       200:
-     *         description: 2fa enable
+     *         description: address
      *       404:
      *         description: User Not Found
      */
@@ -508,7 +508,7 @@ module.exports = (app) => {
      *              items:
      *                  $ref: '#/definitions/Wallet'
      */
-    app.get(baseUrl + '/wallets', walletController.list);
+    app.get(baseUrl + '/wallets', auth, walletController.list);
     /**
      * @swagger
      * /api/v1/wallet/add:

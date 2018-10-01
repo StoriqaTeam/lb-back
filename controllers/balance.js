@@ -43,7 +43,16 @@ module.exports = {
         // return res.status(200).json('withdraw successfull');
     },
     async index(req, res) {
-        const balance = await Balance.findOne({where: {user_id: req.user.id}});
+        let balance = await Balance.findOne({where: {user_id: req.user.id}});
+        if (!balance) {
+            balance = {
+                "user_id": req.user.id,
+                "amount": 0,
+                "currency": "ETH",
+                "wallet_id": null,
+                "wallet_address": ""
+            };
+        }
         return res.status(200).json(balance);
     }
 };

@@ -5,7 +5,7 @@ const walletHelper = require('../helpers/wallet');
 
 module.exports = {
     async list(req, res) {
-        const wallets = await Wallet.all();
+        const wallets = await Wallet.findAll({where: {user_id: req.user.id}});
         return res.status(200).json(wallets);
     },
     async add(req, res) {
@@ -17,6 +17,7 @@ module.exports = {
         });
         return res.status(200).json(wallet);
     },
+
     async getTransactions(req, res) {
         const response = await axios.get(config.get('anypaycoins.url')+'/tx/', {
             headers: {'Authorization': config.get('anypaycoins.key')}
