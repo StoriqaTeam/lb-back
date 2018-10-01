@@ -64,12 +64,10 @@ export class DepositWatcher extends Watcher {
     }
 
     async balanceUpdate(transaction, wallet) {
-
         const balance = await Balance.findOne({where: {user_id: wallet.user_id}});
-        const currentBalance = new Decimal(balance.amount ? balance.amount : 0);
-        const newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
 
         if (!balance) {
+            const newBalance = (new Decimal(transaction.Amount)).toNumber();
             Balance.create({
                 user_id: user_id,
                 currency: transaction.Currency,
@@ -78,6 +76,9 @@ export class DepositWatcher extends Watcher {
                 amount: newBalance
             });
         } else {
+            const currentBalance = new Decimal(balance.amount ? balance.amount : 0);
+            const newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+
             balance.update({
                 amount: newBalance
             });
