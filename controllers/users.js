@@ -4,6 +4,7 @@ const Transaction = require('../models').Transaction;
 const walletGenerator = require('../helpers/wallet');
 const mailer = require("../helpers/mailer");
 const _ = require('lodash');
+const userHelper = require('../helpers/user');
 
 module.exports = {
     list(req, res) {
@@ -34,13 +35,13 @@ module.exports = {
                 message: 'User Not Found',
             });
         }
-        const isExistEmail = await user.checkEmail(req.body.email);
+        const isExistEmail = await userHelper.checkEmail(req.body.email);
         if (req.body.email && isExistEmail) {
             return res.status(400).json({message: `User with email ${req.body.email} already exist`});
         }
         await user.update({
-                name: req.body.name || user.name,
-                email: req.body.email || user.email
+            name: req.body.name || user.name,
+            email: req.body.email || user.email
         });
         return res.status(200).json(user);
     },
@@ -85,7 +86,7 @@ module.exports = {
         if (!user_id || !user) {
             return res.status(400).json({message: 'User Not Found'});
         }
-        return Wallet.findOne({where: {user_id: user_id}})
+        return Wallet.findOne({where: {user_id: user_id, wallet_type: null}})
             .then(wallet => {
 
                 if (!wallet) {

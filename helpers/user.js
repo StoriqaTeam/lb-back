@@ -26,6 +26,10 @@ module.exports = {
         user.save();
         return user;
     },
+    async checkEmail(email) {
+        const users = await User.findOne({where: {email: email}});
+        return users;
+    },
     getUserInfoBySocialProvider(provider, profile) {
         console.log("prof", profile);
         console.log("provider", provider);
