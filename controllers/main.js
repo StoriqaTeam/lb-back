@@ -59,7 +59,9 @@ module.exports = {
     async cloudSuccess(req, res) {
         console.log("cloudSuccess", req.body);
         await Payment.create({
-            user_id: req.user.id
+            user_id: req.user.id,
+            tx_hash: req.body.invoiceId || null,
+            amount: req.body.amount || 0,
         });
         return res.status(200).json({messages: "success"});
     },
