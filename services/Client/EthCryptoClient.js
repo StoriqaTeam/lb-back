@@ -1,15 +1,16 @@
 import Web3 from "web3";
 import Tx from "ethereumjs-tx";
-import {Decimal} from "../decimal";
+import {Decimal} from "decimal.js";
 import {CryptoClient} from "./CryptoClient";
-import {Address, Deposit} from "../../models";
-import {CurrencyPrivateKey} from "../../models/currency-private-key";
-import db from "../../db";
+import contract from "../../config/contract";
+// import {Address, Deposit} from "../../models";
+// import {CurrencyPrivateKey} from "../../models/currency-private-key";
+// import db from "../../db";
 
 export class EthCryptoClient extends CryptoClient {
 
     static supports(currency) {
-        return ["ETH", "ETC"].includes(currency.short);
+        return ["ETH"].includes(currency.short);
     }
 
     async getHeight() {
@@ -17,12 +18,8 @@ export class EthCryptoClient extends CryptoClient {
     }
 
     createClient() {
-        const {host, port} = this.currency;
-        if (!host || !port) return;
-
-        const url = `http://${host}:${port}`;
         this.client = new Web3();
-        this.client.setProvider(new Web3.providers.HttpProvider(url));
+        this.client.setProvider(new Web3.providers.HttpProvider(contract.provider.url));
     }
 
     get gasPrice() {

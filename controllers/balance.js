@@ -13,7 +13,7 @@ module.exports = {
         let balance = await Balance.findOne({where: {user_id: req.user.id}});
         // console.log(balance);
         if (!balance) {
-            balance = {amount: 12};
+            balance = {amount: 0};
             //return res.status(400).json({message: 'You have empty balance'});
         }
         let amount = (req.body.amount != undefined) ? new Decimal(req.body.amount) : new Decimal(0);

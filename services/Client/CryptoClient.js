@@ -1,9 +1,8 @@
 import {Op} from "sequelize";
-import {Decimal} from "../decimal";
-import db from "../../db";
-import {Address, Deposit} from "../../models";
-import {CurrencyPrivateKey} from "../../models/currency-private-key";
-import {logger} from "../../logging";
+import {Decimal} from "decimal.js";
+// import {Address, Deposit} from "../../models";
+// import {CurrencyPrivateKey} from "../../models/currency-private-key";
+import {logger} from "../../logger";
 import {AddressGenerator} from "../address-generator";
 
 export class CryptoClient {
