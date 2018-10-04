@@ -720,6 +720,11 @@ module.exports = (app) => {
      */
     app.post(baseUrl + '/bets/create', auth, betsController.create);
 
+
+    app.post(baseUrl + '/cloud/success', auth, mainController.cloudSuccess);
+    app.post(baseUrl + '/cloud/fail', auth, mainController.cloudSuccess);
+    app.all(baseUrl + '/cloudCallback', mainController.cloudCallback);
+
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',
         status: false

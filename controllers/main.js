@@ -1,6 +1,7 @@
 const axios = require('axios');
 const config = require('config');
 const User = require('../models').User;
+const Payment = require('../models').payments;
 
 const apiUrl = config.get('sumsub.url');
 const apiKey = config.get('sumsub.key');
@@ -51,7 +52,16 @@ module.exports = {
     },
 
     async cloudCallback(req, res) {
+        console.log("cloudCallback", req.body);
+        return res.status(200).json({messages: "success"});
+    },
 
+    async cloudSuccess(req, res) {
+        console.log("cloudSuccess", req.body);
+        await Payment.create({
+            user_id: req.user.id
+        });
+        return res.status(200).json({messages: "success"});
     },
 
 };
