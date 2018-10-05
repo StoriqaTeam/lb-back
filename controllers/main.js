@@ -98,14 +98,16 @@ module.exports = {
             const response = await axios.post(config.get('anypaycoins.url')+method, {
                 headers: {'Authorization': config.get('anypaycoins.key')}
             });
-            console.log(response);
+            console.log(response.data);
             let transactions;
             if (response.data.Code == 'ok') {
                 transactions = response.data.Result.Txid;
+                console.log("transactions = ", transactions);
+                return res.status(200).json({messages: "success", tx: transactions});
             }
-            console.log("transactions = ", transactions);
 
-            return res.status(200).json({messages: "success", tx: transactions});
+
+
         } catch (e) {
             //console.log(e);
             return res.status(400).json({message: e.response.data.Result});
