@@ -1,0 +1,23 @@
+{
+  "base_url": "/api/v1",
+  "back_host": "https://lb-back.stq.cloud/",
+  "front_host": "https://lb-front.stq.cloud/",
+  "2fa_name": "luckyblock",
+  "jwtPrivateKey": "lb-stq-key",
+  "anypaycoins": {
+      "key": "C2TUqjBq7l4BrYzsiLmD3L189RyuObrQ",
+      "url": "https://api.colibripay.com/v1"
+  },
+  "sumsub": {
+	  "key": "MUYWNNFRZMGSHV",
+	  "url": "https://test-api.sumsub.com"
+  },
+  "mailer": {
+    "password": "Ugol115115",
+    "from": "coffee3shop@gmail.com"
+  },
+  "logger": {
+    "path": "/var/log/lb-back.logger.log"
+  }
+
+}

@@ -4,6 +4,7 @@ const messages = require('./messages');
 const wallets = require('./wallets');
 const main = require('./main');
 const balance = require('./balance');
+const bets = require('./bets');
 
 module.exports = {
     auth,
@@ -11,5 +12,6 @@ module.exports = {
     messages,
     wallets,
     main,
-    balance
+    balance,
+    bets
 };

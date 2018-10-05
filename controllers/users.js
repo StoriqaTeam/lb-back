@@ -8,7 +8,9 @@ const _ = require('lodash');
 module.exports = {
     list(req, res) {
         return User
-            .all()
+            .all({order: [
+                    ['id', 'ASC']
+                ]})
             .then(users => res.status(200).send(users))
             .catch(error => res.status(400).json({message: error}));
     },
@@ -27,7 +29,7 @@ module.exports = {
     },
     update(req, res) {
         return User
-            .findById(req.params.id)
+            .findById(req.user.id)
             .then(user => {
                 if (!user) {
                     return res.status(404).json({
