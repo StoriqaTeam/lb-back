@@ -82,7 +82,7 @@ module.exports = {
     },
     async getAddress(req, res) {
         let user_id = req.user.id;
-        let user = await User.findAll({where: {id: user_id}});
+        let user = await User.findOne({where: {id: user_id}});
         if (!user_id || !user) {
             return res.status(400).json({message: 'User Not Found'});
         }
