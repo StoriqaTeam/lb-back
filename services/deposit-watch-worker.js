@@ -9,10 +9,10 @@ import {CryptoClientFactory} from "./Client/CryptoClientFactory";
 // const DepositWatcher = require('./watcher/DepositWatcher');
 
 async function init(short) {
-    const currency = await Currency.findOne({where: {short: "ETH"}});//findByName("ETH");//
-    const client = await CryptoClientFactory.create(currency);
-    if (!client || !client.available) return null;
-    // const client = new Anypaycoins();
+    // const currency = await Currency.findOne({where: {short: "ETH"}});//findByName("ETH");//
+    // const client = await CryptoClientFactory.create(currency);
+    // if (!client || !client.available) return null;
+    const client = new Anypaycoins();
     // const client = new EthCryptoClient(currency);
 
     const service = new DepositWatcher(client);
