@@ -2,8 +2,8 @@ import {logger} from "../logger";
 import {DepositWatcher} from "./watcher/DepositWatcher";
 import {Anypaycoins} from "./Client/Anypaycoins";
 // import {Currency} from "../models/currencies";
-const Currency = require('../models').currencies;
-import {CryptoClientFactory} from "./Client/CryptoClientFactory";
+// const Currency = require('../models').currencies;
+// import {CryptoClientFactory} from "./Client/CryptoClientFactory";
 
 
 // const DepositWatcher = require('./watcher/DepositWatcher');
