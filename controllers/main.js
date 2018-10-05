@@ -3,6 +3,7 @@ const config = require('config');
 const User = require('../models').User;
 const Payment = require('../models').payments;
 const Wallet = require('../models').Wallet;
+const Balance = require('../models').Balance;
 
 const Decimal = require('decimal.js');
 
