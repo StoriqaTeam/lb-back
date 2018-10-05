@@ -13,7 +13,7 @@ module.exports = {
         let balance = await Balance.findOne({where: {user_id: req.user.id}});
         // console.log(balance);
         if (!balance) {
-            balance = {amount: 12};
+            balance = {amount: 0};
             //return res.status(400).json({message: 'You have empty balance'});
         }
         let amount = (req.body.amount != undefined) ? new Decimal(req.body.amount) : new Decimal(0);
@@ -43,7 +43,16 @@ module.exports = {
         // return res.status(200).json('withdraw successfull');
     },
     async index(req, res) {
-        const balance = await Balance.findOne({where: {user_id: req.user.id}});
+        let balance = await Balance.findOne({where: {user_id: req.user.id}});
+        if (!balance) {
+            balance = {
+                "user_id": req.user.id,
+                "amount": 0,
+                "currency": "ETH",
+                "wallet_id": null,
+                "wallet_address": ""
+            };
+        }
         return res.status(200).json(balance);
     }
 };

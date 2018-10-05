@@ -88,6 +88,26 @@ module.exports = (app) => {
     app.post(baseUrl + '/signup', authController.signup);
     /**
      * @swagger
+     * /api/v1/send-activation:
+     *   get:
+     *     tags:
+     *       - User Auth
+     *     description: Send email for user activation
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *        - name: x-auth-token
+     *          description: User Auth token
+     *          in: header
+     *          required: true
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     */
+    app.get(baseUrl + '/send-activation', auth, authController.sendActivation);
+    /**
+     * @swagger
      * /api/v1/user/activate:
      *   post:
      *     tags:
@@ -371,11 +391,12 @@ module.exports = (app) => {
      *          type: string
      *     responses:
      *       200:
-     *         description: 2fa enable
-     *       404:
-     *         description: User Not Found
+     *         schema:
+     *           $ref: '#/definitions/Wallet'
+     *       400:
+     *         description: Error
      */
-    app.post(baseUrl + '/user/deposit-address', usersController.getAddress);
+    app.post(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
     /**
      * @swagger
      * /api/v1/send_ref:
@@ -483,12 +504,12 @@ module.exports = (app) => {
      *       200:
      *         description: Wallets list
      *         properties:
-     *          messages:
+     *          wallets:
      *              type: array
      *              items:
      *                  $ref: '#/definitions/Wallet'
      */
-    app.get(baseUrl + '/wallets', walletController.list);
+    app.get(baseUrl + '/wallets', auth, walletController.list);
     /**
      * @swagger
      * /api/v1/wallet/add:
@@ -698,6 +719,11 @@ module.exports = (app) => {
      *          description: User Not Found
      */
     app.post(baseUrl + '/bets/create', auth, betsController.create);
+
+
+    app.post(baseUrl + '/cloud/success', auth, mainController.cloudSuccess);
+    app.post(baseUrl + '/cloud/fail', auth, mainController.cloudSuccess);
+    app.all(baseUrl + '/cloudCallback', mainController.cloudCallback);
 
     app.get('*', (req, res) => res.status(404).send({
         message: 'Error 404. Page not found',

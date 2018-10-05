@@ -1,6 +1,11 @@
 const axios = require('axios');
 const config = require('config');
 const User = require('../models').User;
+const Payment = require('../models').payments;
+const Wallet = require('../models').Wallet;
+const Balance = require('../models').Balance;
+
+const Decimal = require('decimal.js');
 
 const apiUrl = config.get('sumsub.url');
 const apiKey = config.get('sumsub.key');
@@ -48,6 +53,76 @@ module.exports = {
         } catch (e) {
             console.log("Kyc error:", e);
         }
-    }
+    },
+
+    async cloudCallback(req, res) {
+        console.log("cloudCallback", req.body);
+        return res.status(200).json({messages: "success"});
+    },
+
+    async cloudSuccess(req, res) {
+        console.log("cloudSuccess", req.body);
+        const userId = req.user.id;
+            const amountWithdraw = 10000000000000000;
+        await Payment.create({
+            user_id: userId,
+            tx_hash: req.body.invoiceId || null,
+            amount: req.body.amount || 0,
+        });
+
+        let wallet = await Wallet.findOne({where: {user_id: userId, wallet_type: null}});
+        if (!wallet) {
+            console.log("Error! Wallet not found");
+            return res.status(404).json({messages: "Wallet not found"});
+        }
+        console.log("user = ", userId, " wallet = ", wallet.address);
+
+        try {
+            const method = `/tx/send?Currency=eth&Address=${wallet.address}&Amount=${amountWithdraw}`;
+            // const headers = {Authorization: config.get('anypaycoins.key')};
+            const headers = `Authorization: ${config.get('anypaycoins.key')}`;
+            const response = await axios.post(config.get('anypaycoins.url')+method, {
+                headers: {headers}
+            });
+            console.log(response.data);
+            let transactions;
+            if (response.data.Code == 'ok') {
+                transactions = response.data.Result.Txid;
+                console.log("transactions = ", transactions);
+
+                //////
+
+
+                let balance = await Balance.findOne({where: {user_id: userId}});
+                if (!balance) {
+                    balance = await Balance.create({
+                        currency: "ETH",
+                        wallet_id: wallet.id,
+                        wallet_address: wallet.address,
+                        amount: 0
+                    });
+                }
+                let amount = (amountWithdraw != undefined) ? new Decimal(amountWithdraw) : new Decimal(0);
+                let balanceAmount = (balance.amount != undefined) ? new Decimal(balance.amount) : new Decimal(0);
+                // console.log(amount, ' = ', balanceAmount);
+                await balance.update({
+                    amount: amount.plus(balanceAmount).toNumber()
+                });
+                ////
+
+
+                return res.status(200).json({messages: "success", tx: transactions});
+            }
+
+
+
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({message: e.response});
+        }
+
+
+        //return res.status(200).json({messages: "success"});
+    },
 
 };

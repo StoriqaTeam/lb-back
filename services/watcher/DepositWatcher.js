@@ -1,6 +1,7 @@
 import {Watcher} from "./Watcher";
 import {Wallet, Transaction, Balance, BalanceChange} from "../../models";
 import {Decimal} from 'decimal.js';
+import {Op} from "sequelize";
 
 const _ = require('lodash');
 
@@ -63,26 +64,30 @@ export class DepositWatcher extends Watcher {
     }
 
     async balanceUpdate(transaction, wallet) {
-
         const balance = await Balance.findOne({where: {user_id: wallet.user_id}});
-        const currentBalance = new Decimal(balance.amount ? balance.amount : 0);
-        const newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+        let currentBalance = 0;
+        let newBalance = 0;
 
         if (!balance) {
+            currentBalance = new Decimal(0);
+            newBalance = (new Decimal(transaction.Amount)).toNumber();
             Balance.create({
-                user_id: user_id,
+                user_id: wallet.user_id,
                 currency: transaction.Currency,
                 wallet_id: wallet.id,
                 wallet_address: wallet.address,
                 amount: newBalance
             });
         } else {
+            currentBalance = new Decimal(balance.amount ? balance.amount : 0);
+            newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+
             balance.update({
                 amount: newBalance
             });
         }
 
-        this.logger.info(`Deposit balance update ${currentBalance} to ${newBalance} #${balance.address}`);
+        this.logger.info(`Deposit balance update ${currentBalance.toNumber()} to ${newBalance} #${wallet.address}`);
     }
 
 }
