@@ -5,8 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     amount: DataTypes.DECIMAL,
     price_usd: DataTypes.DECIMAL,
     price_eth: DataTypes.DECIMAL,
+    invoice_id: DataTypes.STRING,
     tx_hash: DataTypes.STRING,
-    status: DataTypes.INTEGER
+    status: DataTypes.STRING
   }, {});
   payments.associate = function(models) {
     // associations can be defined here
