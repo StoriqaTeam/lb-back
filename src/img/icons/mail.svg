@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.934 16.097">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#0fd6f6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}
+        </style>
+    </defs>
+    <g id="Group_790" data-name="Group 790" transform="translate(-5.299 -5.5)">
+        <path id="Rectangle_1300" d="M0 0h23.531v14.896H0z" class="cls-1" data-name="Rectangle 1300" transform="translate(6 6)"/>
+        <path id="Path_191" d="M6 6l11.765 9.089L29.531 6" class="cls-1" data-name="Path 191"/>
+        <path id="Line_183" d="M9.607 0L0 7.426" class="cls-1" data-name="Line 183" transform="translate(6 13.469)"/>
+        <path id="Line_184" d="M9.628 7.437L0 0" class="cls-1" data-name="Line 184" transform="translate(19.903 13.459)"/>
+    </g>
+</svg>

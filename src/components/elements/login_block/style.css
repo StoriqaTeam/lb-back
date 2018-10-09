@@ -1,0 +1,49 @@
+.popup__close{
+    position: absolute;
+    top: 4px;
+    right: 26px;
+    font-size: 44px;
+    cursor: pointer;
+}
+
+.popup__confirm{
+	padding: 5px 100px !important;
+height: unset !important;
+}
+
+.social-login__twitter{
+	background: #3484F9;
+}
+.social-login__telegram{
+	margin: 10px auto 0;
+}
+
+.h__disabled_gray{
+	filter: grayscale(100%);
+}
+
+.h__disabled{
+	pointer-events: none;
+}
+
+.error{
+	height: 15px;
+	display: block;
+	color: #000;
+	text-align: center;
+	    margin: 20px auto;
+
+}
+
+.text-danger{
+	color: #e02b2b;
+}
+
+.signup__label{
+	vertical-align: text-top;
+  margin-left: 10px;	
+}
+
+.link{
+	cursor: pointer;
+}

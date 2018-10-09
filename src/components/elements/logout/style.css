@@ -1,0 +1,12 @@
+.logout__button, .logout__button:hover{
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 2.42;
+  cursor: pointer;
+  margin-left: 20px;
+  color: #23edff;
+}
+
+.logout__button:hover{
+	text-decoration: underline;
+}

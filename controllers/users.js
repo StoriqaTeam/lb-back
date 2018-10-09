@@ -28,6 +28,19 @@ module.exports = {
             })
             .catch(error => res.status(400).json({message: error}));
     },
+    async getUser(req, res) {
+        return User
+            .findById(req.params.id)
+            .then(user => {
+                if (!user) {
+                    return res.status(404).json({
+                        message: 'User Not Found',
+                    });
+                }
+                return user;
+            })
+            .catch(error => res.status(400).json({message: error}));
+    },
     async update(req, res) {
         const user = await User.findById(req.user.id);
         if (!user) {

@@ -3,15 +3,21 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const config = require('config');
+require('ignore-styles')
+const window = require('window');
+
 // const passport = require("passport");
 // const session = require('express-session');
 
-
+process.env.NODE_ENV = 'production' 
 if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.');
     process.exit(1);
 }
 app.use(express.json());
+app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
+app.use('/src/img', express.static(path.resolve(__dirname, 'src/img')));
+app.use('/src/fonts', express.static(path.resolve(__dirname, 'src/fonts')));
 
 app.use(cookieParser());
 app.disable('x-powered-by');
@@ -36,7 +42,8 @@ app.use((req, res, next) => {
 
     next();
 });
-
 require('./swagger')(app);
 
-require('./routes')(app);
+require('./routes/index')(app);
+require('./routes/render')(app);
+

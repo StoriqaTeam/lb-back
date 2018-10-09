@@ -105,7 +105,7 @@ module.exports = (app) => {
      *       200:
      *         description: OK
      */
-    app.get(baseUrl + '/send-activation', auth, authController.sendActivation);
+    app.get(baseUrl + '/send-activation', auth.authAPI, authController.sendActivation);
     /**
      * @swagger
      * /api/v1/user/activate:
@@ -189,7 +189,7 @@ module.exports = (app) => {
      *              type: string
      *              description: QR Code base64
      */
-    app.get(baseUrl + '/2fa', auth, authController.google2fa);
+    app.get(baseUrl + '/2fa', auth.authAPI, authController.google2fa);
     /**
      * @swagger
      * /api/v1/2fa:
@@ -222,7 +222,7 @@ module.exports = (app) => {
      *       400:
      *         description: token not equal
      */
-    app.post(baseUrl + '/2fa', auth, authController.google2fa_enable);
+    app.post(baseUrl + '/2fa', auth.authAPI, authController.google2fa_enable);
 
     /**
      * @swagger
@@ -273,7 +273,7 @@ module.exports = (app) => {
      *       404:
      *          description: User Not Found
      */
-    app.get(baseUrl + '/users/:id', auth, usersController.get);
+    app.get(baseUrl + '/users/:id', auth.authAPI, usersController.get);
     /**
      * @swagger
      * /api/v1/users/{id}:
@@ -312,7 +312,7 @@ module.exports = (app) => {
      *       404:
      *          description: User Not Found
      */
-    app.put(baseUrl + '/users/:id', auth, usersController.update);
+    app.put(baseUrl + '/users/:id', auth.authAPI, usersController.update);
     /**
      * @swagger
      * /api/v1/users/{id}:
@@ -339,7 +339,7 @@ module.exports = (app) => {
      *       404:
      *         description: User Not Found
      */
-    app.delete(baseUrl + '/users/:id', auth, usersController.destroy);
+    app.delete(baseUrl + '/users/:id', auth.authAPI, usersController.destroy);
 
     /**
      * @swagger
@@ -373,7 +373,7 @@ module.exports = (app) => {
      *       404:
      *          description: User Not Found
      */
-    app.get(baseUrl + '/user/profile', auth, usersController.profile);
+    app.get(baseUrl + '/user/profile', auth.authAPI, usersController.profile);
     /**
      * @swagger
      * /api/v1/user/deposit-address:
@@ -396,7 +396,7 @@ module.exports = (app) => {
      *       400:
      *         description: Error
      */
-    app.post(baseUrl + '/user/deposit-address', auth, usersController.getAddress);
+    app.post(baseUrl + '/user/deposit-address', auth.authAPI, usersController.getAddress);
     /**
      * @swagger
      * /api/v1/send_ref:
@@ -509,7 +509,7 @@ module.exports = (app) => {
      *              items:
      *                  $ref: '#/definitions/Wallet'
      */
-    app.get(baseUrl + '/wallets', auth, walletController.list);
+    app.get(baseUrl + '/wallets', auth.authAPI, walletController.list);
     /**
      * @swagger
      * /api/v1/wallet/add:
@@ -541,7 +541,7 @@ module.exports = (app) => {
      *         schema:
      *            $ref: '#/definitions/Wallet'
      */
-    app.post(baseUrl + '/wallet/add', [auth, twofa], walletController.add);
+    app.post(baseUrl + '/wallet/add', [auth.authAPI, twofa], walletController.add);
     // app.post(baseUrl + '/transactions', walletController.getTransactions);
 
     /**
@@ -565,7 +565,7 @@ module.exports = (app) => {
      *         schema:
      *            $ref: '#/definitions/Balance'
      */
-    app.get(baseUrl + '/balance', auth, balanceController.index );
+    app.get(baseUrl + '/balance', auth.authAPI, balanceController.index );
     /**
      * @swagger
      * /api/v1/balance/withdraw:
@@ -597,7 +597,7 @@ module.exports = (app) => {
      *         schema:
      *            $ref: '#/definitions/Balance'
      */
-    app.post(baseUrl + '/balance/withdraw', [auth, twofa], balanceController.withdraw );
+    app.post(baseUrl + '/balance/withdraw', [auth.authAPI, twofa], balanceController.withdraw );
 
     /**
      * @swagger
@@ -622,7 +622,7 @@ module.exports = (app) => {
      *              type: string
      *              description: Token
      */
-    app.get(baseUrl + '/accessToken', auth, mainController.accessToken);
+    app.get(baseUrl + '/accessToken', auth.authAPI, mainController.accessToken);
     app.post(baseUrl + '/check2fa', authController.check2fa);
     app.post(baseUrl + '/disable2fa', authController.disable2fa);
     app.post(baseUrl + '/kyc/callback', mainController.kycCallback);
@@ -674,7 +674,7 @@ module.exports = (app) => {
      *              items:
      *                  $ref: '#/definitions/Bet'
      */
-    app.get(baseUrl + '/bets', auth, betsController.list);
+    app.get(baseUrl + '/bets', auth.authAPI, betsController.list);
     /**
      * @swagger
      * /api/v1/bets/create:
@@ -718,17 +718,14 @@ module.exports = (app) => {
      *       404:
      *          description: User Not Found
      */
-    app.post(baseUrl + '/bets/create', auth, betsController.create);
+    app.post(baseUrl + '/bets/create', auth.authAPI, betsController.create);
 
 
-    app.post(baseUrl + '/cloud/success', auth, mainController.cloudSuccess);
-    app.post(baseUrl + '/cloud/fail', auth, mainController.cloudSuccess);
+    app.post(baseUrl + '/cloud/success', auth.authAPI, mainController.cloudSuccess);
+    app.post(baseUrl + '/cloud/fail', auth.authAPI, mainController.cloudSuccess);
     app.all(baseUrl + '/cloudCallback', mainController.cloudCallback);
 
-    app.get('*', (req, res) => res.status(404).send({
-        message: 'Error 404. Page not found',
-        status: false
-    }));
+
     /**
      * @swagger
      * definitions:

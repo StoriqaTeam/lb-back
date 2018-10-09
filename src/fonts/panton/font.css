@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Panton-Regular';
+  src: url('Panton-Regular.eot');
+  src: url('Panton-Regular.woff2') format('woff2'),
+       url('Panton-Regular.woff') format('woff'),
+       url('Panton-Regular.ttf') format('truetype'),
+       url('Panton-Regular.svg#Panton-Regular') format('svg'),
+       url('Panton-Regular.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+

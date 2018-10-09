@@ -1,0 +1,27 @@
+.rules__block{
+	width: 100%;
+	height: 107px;
+	text-align: center;
+	    padding-top: 30px;
+    margin: 88px auto 30px;
+
+	background: url('/src/img/rules/rules.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.rules__img{
+	margin: 0 auto 0;
+}
+
+.rules{
+	    margin-bottom: 70px;
+
+}
+
+.rules p{
+	font-family: 'Panton';
+	font-size: 16px;
+	color: #fff;
+	margin-bottom: 20px;
+}

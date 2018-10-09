@@ -1,4 +1,6 @@
 node_modules/
+views/
+assets/
 .idea/
 package-lock.json
 config/db.json

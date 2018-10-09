@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 389 86">
+    <defs>
+        <style>
+            .cls-1{fill:#ffc944;stroke:#08132f;font-size:49px;font-family:OpenSans-ExtraBoldItalic,Open Sans;font-weight:800;font-style:italic}.cls-2{filter:url(#_WEEK_JACKPOT)}
+        </style>
+        <filter id="_WEEK_JACKPOT" width="389" height="86" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-color="#08132f"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g class="cls-2">
+        <text id="_WEEK_JACKPOT-2" class="cls-1" data-name="WEEK JACKPOT" transform="translate(193 59)">
+            <tspan x="-182.697" y="0">WEEK JACKPOT</tspan>
+        </text>
+    </g>
+</svg>

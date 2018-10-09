@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400.959 100">
+    <defs>
+        <style>
+            .cls-1,.cls-2{fill:#fff;stroke:#0f275e;font-size:59px}.cls-1{font-family:OpenSans-Bold,Open Sans;font-weight:700}.cls-2{font-family:OpenSans-Regular,Open Sans}.cls-3{filter:url(#_)}.cls-4{filter:url(#_600_000_000)}
+        </style>
+        <filter id="_600_000_000" width="358" height="100" x="42.959" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-color="#08132f"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="_" width="54" height="100" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur-2" stdDeviation="3"/>
+            <feFlood flood-color="#08132f"/>
+            <feComposite in2="blur-2" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="Group_569" data-name="Group 569">
+        <g class="cls-4">
+            <text id="_600_000_000-2" class="cls-1" data-name="600,000,000" transform="translate(52.96 70)">
+                <tspan x="0" y="0">600,000,000</tspan>
+            </text>
+        </g>
+        <g class="cls-3">
+            <text id="_2" class="cls-2" data-name="$" transform="translate(10 70)">
+                <tspan x="0" y="0">$</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
