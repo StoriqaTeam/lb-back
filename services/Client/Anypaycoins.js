@@ -29,6 +29,7 @@ export class Anypaycoins {
 
     async getETHUSDPrice() {
         const response = await axios.get('https://api.coinmarketcap.com/v2/ticker/1027/');
-        return console.log(response.data.data.quotes.USD.price);
+        // console.log(response.data.data.quotes.USD.price);
+        return response.data.data.quotes.USD.price;
     }
 }
