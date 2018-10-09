@@ -92,7 +92,7 @@ class Header extends Component {
         <div className='d-flex'>
 
 			        { this.state.user
-			        	?	[<a href="/profile" ><img  src={this.state.user && this.state.user.avatar ? decodeURIComponent(this.state.user.avatar) : "/src/img/profile/prof.png"}/></a>,
+			        	?	[<a href="/profile" ><img className={(this.state.user && this.state.user.avatar) ? 'rounded-circle' : '' } src={this.state.user && this.state.user.avatar ? decodeURIComponent(this.state.user.avatar) : "/src/img/profile/prof.png"}/></a>,
 									 
 									  <Logout />
 									 ]
