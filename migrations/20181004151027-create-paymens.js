@@ -20,11 +20,14 @@ module.exports = {
             price_eth: {
                 type: Sequelize.DECIMAL
             },
+            invoice_id: {
+                type: Sequelize.STRING
+            },
             tx_hash: {
                 type: Sequelize.STRING
             },
             status: {
-                type: Sequelize.INTEGER
+                type: Sequelize.STRING
             },
             createdAt: {
                 allowNull: false,

@@ -64,11 +64,7 @@ module.exports = {
         console.log("cloudSuccess", req.body);
         const userId = req.user.id;
             const amountWithdraw = 10000000000000000;
-        await Payment.create({
-            user_id: userId,
-            tx_hash: req.body.invoiceId || null,
-            amount: req.body.amount || 0,
-        });
+
 
         let wallet = await Wallet.findOne({where: {user_id: userId, wallet_type: null}});
         if (!wallet) {
@@ -90,9 +86,6 @@ module.exports = {
                 transactions = response.data.Result.Txid;
                 console.log("transactions = ", transactions);
 
-                //////
-
-
                 let balance = await Balance.findOne({where: {user_id: userId}});
                 if (!balance) {
                     balance = await Balance.create({
@@ -109,7 +102,14 @@ module.exports = {
                     amount: amount.plus(balanceAmount).toNumber()
                 });
                 ////
-
+                const payment = await Payment.create({
+                    user_id: userId,
+                    invoice_id: req.body.invoiceId || null,
+                    amount: req.body.amount || 0,
+                    status: 'panding',
+                    tx_hash: transactions
+                });
+                console.log(payment);
 
                 return res.status(200).json({messages: "success", tx: transactions});
             }
