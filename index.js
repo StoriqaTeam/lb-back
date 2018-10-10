@@ -38,5 +38,6 @@ app.use((req, res, next) => {
 });
 
 require('./swagger')(app);
+require('./contract')(app);
 
 require('./routes')(app);
