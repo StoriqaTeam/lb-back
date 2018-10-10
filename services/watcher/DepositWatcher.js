@@ -26,22 +26,27 @@ export class DepositWatcher extends Watcher {
     }
 
     async processTransactions(transactions) {
-
+        let delimetr = Math.pow(10, 18);
+        // console.log(transactions);
         for (const transaction of transactions) {
+            //if (transaction.Type !== "receive") continue; //send
+            //console.log(transaction);
+            // console.log(transaction.Address, " ", transaction.Amount/Math.pow(10,18));
+            // continue;
             let wallet = await Wallet.findOne({where: {address: transaction.Address}});
 
-            if (!wallet) wallet = {id: 0};
+            if (!wallet) continue;
 
             const currentTransactions = await Transaction.findOne({
                 where: {
-                    tx_hash: transaction.Txid,
-                    confirmations: {[Op.lt]: 20}
+                    tx_hash: transaction.Txid
                 },
-            });
+            });//confirmations: {[Op.lt]: 20}
+            // console.log(currentTransactions);
 
             if (!currentTransactions) {
                 if (transaction.Status == 'done' && transaction.Confirmations > 12 && wallet.id > 0) {
-                    await this.balanceUpdate(transaction, wallet);
+                    //await this.balanceUpdate(transaction, wallet, transaction.Type);
                 }
                 await Transaction.create({
                     wallet_id: wallet.id,
@@ -51,43 +56,72 @@ export class DepositWatcher extends Watcher {
                     confirmations: transaction.Confirmations,
                     price_usd: this.client.getETHUSDPrice()
                 });
-                this.logger.info(`Transaction create amount: ${transaction.Amount}, confirmations: ${transaction.Confirmations}`);
+                this.logger.info(`Transaction create amount: ${transaction.Amount / delimetr}, hash: ${transaction.Txid} (${transaction.Type}), confirmations: ${transaction.Confirmations}`);
+
+                await this.balanceUpdate(transaction, wallet, transaction.Type);
             } else {
-                await currentTransactions.update({
-                    confirmations: transaction.Confirmations
-                });
-                this.logger.info(`Transaction #${currentTransactions.id} update confirmations: ${transaction.Confirmations}`);
+                if (currentTransactions.confirmations !== transaction.Confirmations) {
+                    await currentTransactions.update({
+                        id: transaction.id,
+                        confirmations: transaction.Confirmations
+                    });
+                    this.logger.info(`Transaction #${currentTransactions.id} update confirmations: ${transaction.Confirmations}`);
+                }
             }
             // console.log(newTransaction);
 
         }
     }
 
-    async balanceUpdate(transaction, wallet) {
-        const balance = await Balance.findOne({where: {user_id: wallet.user_id}});
-        let currentBalance = 0;
-        let newBalance = 0;
-
-        if (!balance) {
-            currentBalance = new Decimal(0);
-            newBalance = (new Decimal(transaction.Amount)).toNumber();
-            Balance.create({
-                user_id: wallet.user_id,
-                currency: transaction.Currency,
-                wallet_id: wallet.id,
-                wallet_address: wallet.address,
-                amount: newBalance
+    async balanceUpdate(transaction, wallet, type) {
+        try {
+            let delimetr = Math.pow(10, 18);
+            const balance = await Balance.findOne({
+                where: {
+                    user_id: wallet.user_id,
+                    wallet_id: wallet.id
+                }
             });
-        } else {
-            currentBalance = new Decimal(balance.amount ? balance.amount : 0);
-            newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+            let currentBalance = 0;
+            let newBalance = 0;
 
-            balance.update({
-                amount: newBalance
-            });
+            if (!balance) {
+                currentBalance = new Decimal(0);
+                newBalance = (new Decimal(transaction.Amount)).toNumber();
+                await Balance.create({
+                    user_id: wallet.user_id,
+                    currency: transaction.Currency,
+                    wallet_id: wallet.id,
+                    wallet_address: wallet.address,
+                    amount: newBalance,
+                    transaction_id: transaction.id
+                });
+                this.logger.info(`Deposit balance new ${currentBalance.toNumber() / delimetr} to ${newBalance / delimetr} #${wallet.address}`);
+            } else {
+                currentBalance = new Decimal(balance.amount ? balance.amount : 0);
+                newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+                /*switch (type) {
+                    case 'receive':
+                        newBalance = currentBalance.plus(new Decimal(transaction.Amount)).toNumber();
+                        break;
+                    case 'send':
+                        newBalance = currentBalance.minus(new Decimal(transaction.Amount)).toNumber();
+                        break;
+                    default:
+                        newBalance = currentBalance.toNumber();
+                }//*/
+
+                await balance.update({
+                    amount: newBalance
+                });
+                this.logger.info(`Deposit balance update ${currentBalance.toNumber() / delimetr} to ${newBalance / delimetr} #${wallet.address}`);
+            }
+
+
+        } catch (e) {
+            console.log(e);
+            this.logger.error(`Error ${e}`);
         }
-
-        this.logger.info(`Deposit balance update ${currentBalance.toNumber()} to ${newBalance} #${wallet.address}`);
     }
 
 }
