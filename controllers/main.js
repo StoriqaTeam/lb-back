@@ -1,9 +1,11 @@
 const axios = require('axios');
+const request = require('request');
 const config = require('config');
 const User = require('../models').User;
 const Payment = require('../models').payments;
 const Wallet = require('../models').Wallet;
 const Balance = require('../models').Balance;
+const Colibrypay = require('../helpers/colibripay');
 
 const Decimal = require('decimal.js');
 
@@ -63,7 +65,7 @@ module.exports = {
     async cloudSuccess(req, res) {
         console.log("cloudSuccess", req.body);
         const userId = req.user.id;
-            const amountWithdraw = 10000000000000000;
+            const amountWithdraw = 1000000000000000;
 
 
         let wallet = await Wallet.findOne({where: {user_id: userId, wallet_type: null}});
@@ -74,19 +76,14 @@ module.exports = {
         console.log("user = ", userId, " wallet = ", wallet.address);
 
         try {
-            const method = `/tx/send?Currency=eth&Address=${wallet.address}&Amount=${amountWithdraw}`;
-            // const headers = {Authorization: config.get('anypaycoins.key')};
-            const headers = `Authorization: ${config.get('anypaycoins.key')}`;
-            const response = await axios.post(config.get('anypaycoins.url')+method, {
-                headers: {headers}
-            });
-            console.log(response.data);
-            let transactions;
-            if (response.data.Code == 'ok') {
-                transactions = response.data.Result.Txid;
-                console.log("transactions = ", transactions);
+            let txhash;
+            const transactionResponce = await Colibrypay.sendTx('eth', wallet.address,amountWithdraw);
+            //console.log("tx",transaction);
+            if (transactionResponce.Txid) {
+                txhash = transactionResponce.Txid;
+                console.log("transactions = ", txhash);
 
-                let balance = await Balance.findOne({where: {user_id: userId}});
+                /*let balance = await Balance.findOne({where: {user_id: userId}});
                 if (!balance) {
                     balance = await Balance.create({
                         currency: "ETH",
@@ -101,18 +98,18 @@ module.exports = {
                 await balance.update({
                     amount: amount.plus(balanceAmount).toNumber()
                 });
-                ////
+                /////*/
                 const payment = await Payment.create({
                     user_id: userId,
                     invoice_id: req.body.invoiceId || null,
-                    amount: req.body.amount || 0,
+                    amount: req.body.amount || 100,
                     status: 'panding',
-                    tx_hash: transactions
+                    tx_hash: txhash
                 });
                 console.log(payment);
 
-                return res.status(200).json({messages: "success", tx: transactions});
-            }
+                return res.status(200).json({messages: "success", tx: txhash});
+            }//*/
 
 
 
