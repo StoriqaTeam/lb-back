@@ -8,5 +8,5 @@ module.exports = (app) => {
     //     const bl = new baseLottery();
     //     res.setHeader('Content-Type', 'application/json');
     //     return res.status(200).json(config);
-    // }
+    // }//
 };

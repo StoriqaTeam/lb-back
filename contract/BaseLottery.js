@@ -1,6 +1,6 @@
 const config = require('../config/contract');
 const Web3 = require('web3');
-
+//
 module.exports = {
     async index(req, res) {
         const client = new Web3();
